@@ -16,5 +16,9 @@
     "url": "https://github.com/liljdot/chatApp-rebuild/issues"
   },
   "homepage": "https://github.com/liljdot/chatApp-rebuild#readme",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "tsx": "^4.20.4",
+    "typescript": "^5.9.2"
+  }
 }
