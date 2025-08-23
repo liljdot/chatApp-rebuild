@@ -19,6 +19,8 @@
   "homepage": "https://github.com/liljdot/chatApp-rebuild#readme",
   "description": "",
   "dependencies": {
+    "@types/express": "^5.0.3",
+    "express": "^5.1.0",
     "tsx": "^4.20.4",
     "typescript": "^5.9.2"
   }
