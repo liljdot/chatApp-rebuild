@@ -58,5 +58,6 @@ const postSignup = (req: Request, res: Response) => {
 }
 
 export {
-    postLogin
+    postLogin,
+    postSignup
 }
