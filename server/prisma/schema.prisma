@@ -30,14 +30,14 @@ model Message {
 }
 
 model User {
-  id              String         @id
+  id              String         @id @default(cuid())
   username        String         @unique
   fullName        String
   password        String
   gender          Gender
   profilePic      String
   createdAt       DateTime       @default(now())
-  updatedAt       DateTime
+  updatedAt       DateTime       @updatedAt
   conversationIds String[]
   Message         Message[]
   Conversation    Conversation[]
