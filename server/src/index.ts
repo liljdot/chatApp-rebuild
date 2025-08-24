@@ -3,6 +3,8 @@ import authRoutes from "./routes/auth.route.js"
 
 const app = express()
 
+app.use(express.json()) // Middleware to parse JSON bodies
+
 app.use("/api/auth", authRoutes)
 
 app.listen(3000, () => {
