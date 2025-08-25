@@ -1,6 +1,9 @@
+import { config } from "dotenv"
 import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
-import { createUniqueProfilepic, hashNewPassword } from "../util/auth.js";
+import { createUniqueProfilepic, generateToken, hashNewPassword } from "../util/auth.js";
+
+config()
 
 const postLogin = (req: Request, res: Response) => {
     res.send("Login route, baby!");
@@ -52,9 +55,42 @@ const postSignup = (req: Request, res: Response) => {
                 profilePic: createUniqueProfilepic(username, gender)
             }
         }))
-        .then(newUser => newUser 
-            // TODO: Create a JWT token and send it to the client
+        .then(newUser => {
+            const token = generateToken(newUser.id)
+
+            res.cookie(
+                "chatAppToken",
+                token,
+                {
+                    maxAge: 10 * 60 * 1000, // 10 minutes
+                    httpOnly: true,
+                    sameSite: "strict",
+                    secure: process.env.NODE_ENV != "development"
+                }
+            )
+
+            res.status(201).json({
+                status: 201,
+                message: "User created successfully",
+                data: {
+                    id: newUser.id,
+                    username: newUser.username,
+                    fullName: newUser.fullName,
+                    gender: newUser.gender,
+                    profilePic: newUser.profilePic,
+                    createdAt: newUser.createdAt,
+                    updatedAt: newUser.updatedAt
+                }
+            })
+        }
         )
+        .catch(err => {
+            res.status(err.status || 500).json({
+                status: err.status || 500,
+                message: err.message || "Something went wrong",
+                error: err.error || "Internal Server Error"
+            })
+        })
 }
 
 export {
