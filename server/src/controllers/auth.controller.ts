@@ -47,7 +47,7 @@ const postLogin = (req: Request, res: Response) => {
         )
         .then(isCorrect => {
             if (!isCorrect) {
-                Promise.reject({
+                return Promise.reject({
                     status: 400,
                     message: "Incorrect password",
                     error: "Invalid credentials"
