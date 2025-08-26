@@ -167,7 +167,20 @@ const postSignup = (req: Request, res: Response) => {
         })
 }
 
+const postLogout = (req: Request, res: Response) => {
+    res.cookie(
+        "chatAppToken",
+        "",
+        { maxAge: 0 }
+    )
+
+    res.status(204).json({
+        status: 204,
+    })
+}
+
 export {
     postLogin,
-    postSignup
+    postSignup,
+    postLogout
 }
