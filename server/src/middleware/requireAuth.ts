@@ -51,3 +51,5 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
             .finally(next)
     })
 }
+
+export default requireAuth;
