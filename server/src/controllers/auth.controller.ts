@@ -8,6 +8,8 @@ import { CleanUser } from "../types/index.js";
 config()
 
 const getMe = (req: Request, res: Response, next: NextFunction) => {
+    // must be used with requireAuth middleware which will either set req.user or req.error
+
     const { user, error } = req
 
     if (error) {
