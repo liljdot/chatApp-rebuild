@@ -1,6 +1,9 @@
+import { config } from "dotenv";
 import jwt, { VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../db/prisma.js";
+
+config()
 
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     const token = req.cookies.chatAppToken
@@ -15,7 +18,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 
     const { JWT_SECRET } = process.env
 
-    const decodedToken = jwt.verify(token, JWT_SECRET!, (err: VerifyErrors | null, payload: any) => {
+    jwt.verify(token, JWT_SECRET!, (err: VerifyErrors | null, payload: any) => {
         if (err) {
             req.error = {
                 status: 401,
