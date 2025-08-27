@@ -200,7 +200,8 @@ const postLogout = (req: Request, res: Response) => {
 }
 
 export {
+    getMe,
     postLogin,
     postSignup,
-    postLogout
+    postLogout,
 }
