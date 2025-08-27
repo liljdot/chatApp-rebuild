@@ -1,11 +1,31 @@
 import { config } from "dotenv"
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import prisma from "../db/prisma.js";
 import { createUniqueProfilepic, generateToken, hashNewPassword } from "../util/auth.js";
 import bcrypt from "bcryptjs";
 import { CleanUser } from "../types/index.js";
 
 config()
+
+const getMe = (req: Request, res: Response, next: NextFunction) => {
+    const { user, error } = req
+
+    if (error) {
+        console.log("getMe error:", error)
+
+        return res.status(error.status || 500).json({
+            status: error.status || 500,
+            message: error.message || "Something went wrong",
+            error: error.error || "Internal server error"
+        })
+    }
+
+    res.status(200).json({
+        status: 200,
+        message: "get User successful",
+        data: user
+    })
+}
 
 const postLogin = (req: Request, res: Response) => {
     const { username, password } = req.body
