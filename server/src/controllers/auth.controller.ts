@@ -98,11 +98,15 @@ const postLogin = (req: Request, res: Response) => {
             })
         }
         )
-        .catch(err => res.status(err.status || 500).json({
+        .catch(err => {
+            console.log("postLogin error:", err)
+
+            return res.status(err.status || 500).json({
             status: err.status || 500,
             message: err.message || "Something went wrong",
             error: err.error || "Internal server error"
-        }))
+        })
+    })
 }
 
 const postSignup = (req: Request, res: Response) => {
@@ -181,6 +185,8 @@ const postSignup = (req: Request, res: Response) => {
         }
         )
         .catch(err => {
+            console.log("postSignup error:", err)
+
             res.status(err.status || 500).json({
                 status: err.status || 500,
                 message: err.message || "Something went wrong",

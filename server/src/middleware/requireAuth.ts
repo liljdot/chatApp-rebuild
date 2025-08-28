@@ -50,7 +50,10 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
                 })
                 : req.user = cleanUser
             )
-            .catch(err => req.error = err)
+            .catch(err => {
+                console.log("requireAuth error:", err)
+                req.error = err
+            })
             .finally(next)
     })
 }
