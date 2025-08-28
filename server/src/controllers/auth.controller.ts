@@ -187,7 +187,7 @@ const postSignup = (req: Request, res: Response) => {
         .catch(err => {
             console.log("postSignup error:", err)
 
-            res.status(err.status || 500).json({
+            return res.status(err.status || 500).json({
                 status: err.status || 500,
                 message: err.message || "Something went wrong",
                 error: err.error || "Internal Server Error"
