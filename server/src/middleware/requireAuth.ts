@@ -1,5 +1,5 @@
 import { config } from "dotenv";
-import jwt, { VerifyErrors } from "jsonwebtoken";
+import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../db/prisma.js";
 
@@ -18,7 +18,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 
     const { JWT_SECRET } = process.env
 
-    jwt.verify(token, JWT_SECRET!, (err: VerifyErrors | null, payload: any) => {
+    jwt.verify(token, JWT_SECRET!, (err: VerifyErrors | null, payload: JwtPayload | string | undefined) => {
         if (err) {
             req.error = {
                 status: 401,
@@ -28,7 +28,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
             return next() // stop verification process and pass error response to next function
         }
 
-        const { userId } = payload
+        const { userId } = payload as JwtPayload
 
         prisma.user.findUnique({
             where: { id: userId },
