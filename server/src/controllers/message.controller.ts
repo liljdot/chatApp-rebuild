@@ -1,6 +1,63 @@
 import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
 
+const getConversations = (req: Request, res: Response) => {
+    // must be used with requireAuth middleware which will either set req.user or req.error
+
+    const { error, user } = req
+
+    if (error) {
+        return res.status(error.status || 500).json({
+            status: error.status || 500,
+            message: error.message || "Something went wrong",
+            error: error.error || "Internal server error"
+        })
+    }
+
+    if (!user) {
+        return res.status(401).json({
+            status: 401,
+            message: "You must be logged in to view conversations",
+            error: "Unauthorized"
+        })
+    }
+
+    prisma.conversation.findMany({
+        where: {
+            participantIds: { hasSome: [user.id] }
+        },
+        include: {
+            User: true,
+            Message: {
+                take: 1,
+                orderBy: { createdAt: "desc" }
+            }
+        },
+        orderBy: { updatedAt: "desc" },
+    })
+        .then(conversations => !conversations
+            ? Promise.reject({
+                status: 404,
+                message: "No conversations found",
+                error: "No conversations"
+            })
+            : res.status(200).json({
+                status: 200,
+                message: "Get conversations successful",
+                data: conversations
+            })
+        )
+        .catch(err => {
+            console.log("getConversations error:", err)
+
+            return res.status(err.status || 500).json({
+                status: err.status || 500,
+                message: err.message || "Something went wrong",
+                error: err.error || "Internal server error"
+            })
+        })
+}
+
 const getConversationMessages = (req: Request, res: Response) => {
     // must be used with requireAuth middleware which will either set req.user or req.error
 
