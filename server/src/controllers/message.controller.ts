@@ -32,6 +32,11 @@ const getConversations = (req: Request, res: Response) => {
                     id: {
                         not: user.id
                     }
+                },
+                select: {
+                    id: true,
+                    profilePic: true,
+                    fullName: true
                 }
             },
             Message: {
