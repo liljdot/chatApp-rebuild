@@ -237,5 +237,6 @@ const postSendMessage = (req: Request, res: Response) => {
 }
 
 export {
+    getConversationMessages,
     postSendMessage
 }
