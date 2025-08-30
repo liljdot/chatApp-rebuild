@@ -294,6 +294,7 @@ const postSendMessage = (req: Request, res: Response) => {
 }
 
 export {
+    getConversations,
     getConversationMessages,
     postSendMessage
 }
