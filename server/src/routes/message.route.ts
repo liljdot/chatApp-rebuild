@@ -4,6 +4,7 @@ import { postSendMessage } from "../controllers/message.controller.js";
 
 const messageRoutes = express()
 
+messageRoutes.get("/:conversationId", requireAuth, () => {})
 messageRoutes.post("/send/:recipientId", requireAuth, postSendMessage)
 
 export default messageRoutes;
