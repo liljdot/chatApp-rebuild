@@ -27,7 +27,13 @@ const getConversations = (req: Request, res: Response) => {
             participantIds: { hasSome: [user.id] }
         },
         include: {
-            User: true,
+            User: {
+                where: {
+                    id: {
+                        not: user.id
+                    }
+                }
+            },
             Message: {
                 take: 1,
                 orderBy: { createdAt: "desc" }
