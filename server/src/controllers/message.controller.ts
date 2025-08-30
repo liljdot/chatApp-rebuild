@@ -1,6 +1,144 @@
 import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
 
+const getConversationMessages = (req: Request, res: Response) => {
+    // must be used with requireAuth middleware which will either set req.user or req.error
+
+    const { params: { conversationId }, error, user } = req
+
+    if (error) {
+        return res.status(error.status || 500).json({
+            status: error.status || 500,
+            message: error.message || "Something went wrong",
+            error: error.error || "Internal server error"
+        })
+    }
+
+    if (!user) {
+        return res.status(401).json({
+            status: 401,
+            message: "You must be logged in to view messages",
+            error: "Unauthorized"
+        })
+    }
+
+    if (!conversationId) {
+        return res.status(400).json({
+            status: 400,
+            message: "Please provide a conversationId",
+            error: "Missing conversationId"
+        })
+    }
+
+    prisma.conversation.findUnique({
+        where: { id: conversationId },
+        include: {
+            Message: {
+                orderBy: { createdAt: "asc" }
+            }
+        }
+    })
+        .then(conversation => !conversation
+            ? Promise.reject({
+                status: 404,
+                message: "Conversation not found",
+                error: "Invalid conversationId"
+            })
+            : conversation
+        )
+        .then(conversation => !conversation.participantIds.includes(user.id)
+            ? Promise.reject({
+                status: 403,
+                message: "You are not a participant in this conversation",
+                error: "Forbidden"
+            })
+            : res.status(200).json({
+                status: 200,
+                message: "Get conversation messages successful",
+                data: conversation.Message
+            })
+        )
+        .catch(err => {
+            console.log("getConversationMessages error:", err)
+
+            return res.status(err.status || 500).json({
+                status: err.status || 500,
+                message: err.message || "Something went wrong",
+                error: err.error || "Internal server error"
+            })
+        })
+
+    // const { params: { conversationId }, error, user } = req
+
+    // if (error) {
+    //     console.log("auth error:", error) // because requireAuth runs first, any error it sets will be related to auth
+
+    //     return res.status(error.status || 500).json({
+    //         status: error.status || 500,
+    //         message: error.message || "Something went wrong",
+    //         error: error.error || "Internal server error"
+    //     })
+    // }
+
+    // if (!user) {
+    //     return res.status(401).json({
+    //         status: 401,
+    //         message: "You must be logged in to view messages",
+    //         error: "Unauthorized"
+    //     })
+    // }
+
+    // if (!conversationId) {
+    //     return res.status(400).json({
+    //         status: 400,
+    //         message: "Please provide a conversationId",
+    //         error: "Missing conversationId"
+    //     })
+    // }
+
+    // prisma.conversation.findUnique({
+    //     where: { id: conversationId },
+    //     include: {
+    //         Message: {
+    //             orderBy: { createdAt: "asc" } // order messages by createdAt ascending
+    //         }
+    //     }
+    // })
+    //     .then(conversation => {
+    //         if (!conversation) {
+    //             return res.status(404).json({
+    //                 status: 404,
+    //                 message: "Conversation not found",
+    //                 error: "Invalid conversationId"
+    //             })
+    //         }
+
+    //         // check if user is a participant in the conversation
+    //         if (!conversation.participantIds.includes(user.id)) {
+    //             return res.status(403).json({
+    //                 status: 403,
+    //                 message: "You are not a participant in this conversation",
+    //                 error: "Forbidden"
+    //             })
+    //         }
+
+    //         return res.status(200).json({
+    //             status: 200,
+    //             message: "Messages retrieved successfully",
+    //             data: conversation.Message
+    //         })
+    //     })
+    //     .catch(err => {
+    //         console.log("getConversationMessages error:", err)
+
+    //         return res.status(500).json({
+    //             status: 500,
+    //             message: "Something went wrong",
+    //             error: "Internal server error"
+    //         })
+    //     })
+}
+
 const postSendMessage = (req: Request, res: Response) => {
     // must be used with requireAuth middleware which will either set req.user or req.error
 
