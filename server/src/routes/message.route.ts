@@ -4,6 +4,7 @@ import { getConversationMessages, postSendMessage } from "../controllers/message
 
 const messageRoutes = express()
 
+messageRoutes.get("/conversations", requireAuth, () => {})
 messageRoutes.get("/:conversationId", requireAuth, getConversationMessages)
 messageRoutes.post("/send/:recipientId", requireAuth, postSendMessage)
 
