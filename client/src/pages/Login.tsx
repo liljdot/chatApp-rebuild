@@ -15,7 +15,8 @@ const Login = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Username</span>
                             </label>
-                            <input type="text"
+                            <input 
+                            type="text"
                                 placeholder="Enter username"
                                 className="w-full input input-bordered h-10"
                             />
@@ -25,7 +26,8 @@ const Login = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Password</span>
                             </label>
-                            <input type="password"
+                            <input 
+                            type="password"
                                 placeholder="Enter password"
                                 className="w-full input input-bordered h-10"
                             />
