@@ -1,3 +1,4 @@
+import GenderCheckbox from "@/components/ui/GenderCheckbox"
 import { Link } from "react-router-dom"
 
 const Signup = () => {
@@ -55,8 +56,9 @@ const Signup = () => {
                             />
                         </div>
 
-                        {/* TODO: add gender select checkbox */}
-
+                        <div className="mt-4">
+                            <GenderCheckbox />
+                        </div>
                         <Link
                             to="/login"
                             className="text-sm hover:underline hover:text-blue-600 mt-4 inline-block">
@@ -66,7 +68,7 @@ const Signup = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="btn btn-block btn-sm mt-2 bg-blue-600">
+                                className="btn btn-block btn-sm mt-2 bg-blue-600 border-none">
                                 Sign Up
                             </button>
                         </div>
