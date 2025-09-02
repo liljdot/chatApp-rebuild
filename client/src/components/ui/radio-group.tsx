@@ -29,7 +29,7 @@ function RadioGroupItem({
       <RadioGroupPrimitive.Item
         data-slot="radio-group-item"
         className={cn(
-          "form-control cursor-pointer",
+          "form-control cursor-pointer border",
           className
         )}
         {...props}
