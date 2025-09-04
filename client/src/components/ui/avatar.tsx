@@ -4,18 +4,24 @@ import * as AvatarPrimitive from "@radix-ui/react-avatar"
 import { cn } from "@/lib/utils"
 
 function Avatar({
+  online,
   className,
   ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+}: (React.ComponentProps<typeof AvatarPrimitive.Root> & { online?: boolean })) {
   return (
-    <AvatarPrimitive.Root
-      data-slot="avatar"
-      className={cn(
-        "relative flex size-8 shrink-0 overflow-hidden rounded-full",
-        className
-      )}
-      {...props}
-    />
+    <div className={cn(
+      "avatar",
+      online && "avatar-online"
+    )}>
+      <AvatarPrimitive.Root
+        data-slot="avatar"
+        className={cn(
+          "size-12 rounded-full",
+          className
+        )}
+        {...props}
+      />
+    </div>
   )
 }
 
