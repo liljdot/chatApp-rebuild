@@ -1,5 +1,5 @@
-import ConversationSearch from "@/features/conversation/ConversationSearch"
-import ConversationsList from "@/features/conversation/ConversationsList"
+import ConversationSearch from "@/features/conversation/components/ConversationSearch"
+import ConversationsList from "@/features/conversation/components/ConversationsList"
 
 const Sidebar = () => {
     const conversationFieldOpen = true

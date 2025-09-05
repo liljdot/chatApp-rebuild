@@ -1,5 +1,5 @@
 import ConversationTile from "./ConversationTile";
-import type { ConversationForList } from "./types";
+import type { ConversationForList } from "../types";
 
 interface Props {
     conversations: ConversationForList[]

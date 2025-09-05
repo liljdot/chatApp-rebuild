@@ -1,5 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
-import type { ConversationForList } from "./types";
+import type { ConversationForList } from "../types";
 
 interface Props {
     conversation?: ConversationForList
