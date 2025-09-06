@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import type { ConversationForList } from "../types"
+import MessageBubble from "./MessageBubble"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
@@ -31,7 +32,7 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = () => {
             <div className="flex justify-center bg-sky-500 px-4 py-2 mb-2">
                 <div className="flex items-center gap-2">
                     <Avatar online>
-                        <AvatarImage src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp">
+                        <AvatarImage className="rounded-full" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp">
 
                         </AvatarImage>
                         <AvatarFallback>CN</AvatarFallback>
@@ -50,7 +51,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = () => {
     return (
         <>
             <div className="flex-1 px-4 overflow-auto">
-
+                <MessageBubble />
             </div>
         </>
     )
