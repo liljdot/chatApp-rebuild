@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import type { ConversationForList } from "../types"
-import { TiMessages } from "react-icons/ti"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
@@ -10,6 +9,8 @@ interface ConversationFieldProps {
 
 interface ConversationFieldHeaderProps { }
 
+interface MessagesContainerProps { }
+
 const ConversationField: React.FC<ConversationFieldProps> = ({
     conversationFieldOpen,
     setConversationFieldOpen,
@@ -18,6 +19,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     return (
         <div className={`md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out ${conversationFieldOpen ? "max-w-screen w-75" : "max-w-0 overflow-hidden"}`}>
             <ConversationFieldHeader />
+            <MessagesContainer />
         </div>
     )
 }
@@ -38,6 +40,17 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = () => {
                         <span className="text-sm font-semibold text-slate-200">John Doe</span>
                     </div>
                 </div>
+            </div>
+        </>
+    )
+}
+
+const MessagesContainer: React.FC<MessagesContainerProps> = () => {
+
+    return (
+        <>
+            <div className="flex-1 px-4 overflow-auto">
+
             </div>
         </>
     )
