@@ -1,6 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import type { ConversationForList } from "../types"
 import MessageBubble from "./MessageBubble"
+import MessageInput from "./MessageInput"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
@@ -21,6 +22,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
         <div className={`md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out ${conversationFieldOpen ? "max-w-screen w-75" : "max-w-0 overflow-hidden"}`}>
             <ConversationFieldHeader />
             <MessagesContainer />
+            <MessageInput />
         </div>
     )
 }
@@ -51,6 +53,17 @@ const MessagesContainer: React.FC<MessagesContainerProps> = () => {
     return (
         <>
             <div className="flex-1 px-4 overflow-auto">
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
+                <MessageBubble />
                 <MessageBubble />
             </div>
         </>
