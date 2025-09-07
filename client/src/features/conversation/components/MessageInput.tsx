@@ -5,7 +5,7 @@ interface Props { }
 const MessageInput: React.FC<Props> = () => {
     return (
         <form className="px-4 my-3">
-            <div className="w-full">
+            <div className="w-full relative">
                 <input
                     type="text"
                     placeholder="Type a message"
