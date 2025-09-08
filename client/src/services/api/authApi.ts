@@ -4,7 +4,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 interface GetMeResponseType {
     status: number
     message: string
-    authUser: User
+    data: User
 }
 
 export const authApi = createApi({
