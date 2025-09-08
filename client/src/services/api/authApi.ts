@@ -7,7 +7,7 @@ interface GetMeResponseType {
     authUser: User
 }
 
-const authApi = createApi({
+export const authApi = createApi({
     reducerPath: "api/authApi",
     baseQuery: fetchBaseQuery({
         baseUrl: "/api/"
