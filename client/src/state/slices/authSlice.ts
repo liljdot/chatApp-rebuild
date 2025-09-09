@@ -1,9 +1,9 @@
+import { authApi } from "@/services/api/authApi";
 import { createSlice } from "@reduxjs/toolkit";
 
 interface AuthUser {
     id: string
     fullName: string
-    email: string
     profilePic: string
     gender: "male" | "female"
 }
@@ -17,7 +17,12 @@ const initialState: {
 const authSlice = createSlice({
     name: "auth",
     initialState,
-    reducers: {}
+    reducers: {},
+    extraReducers: builder => {
+        builder.addMatcher(authApi.endpoints.getMe.matchFulfilled, (state, action) => {
+            state.authUser = action.payload.data
+        })
+    }
 })
 
 export const { reducer: authSliceReducer, actions: authSliceActions } = authSlice
