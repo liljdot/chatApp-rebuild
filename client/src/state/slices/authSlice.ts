@@ -22,6 +22,9 @@ const authSlice = createSlice({
         builder.addMatcher(authApi.endpoints.getMe.matchFulfilled, (state, action) => {
             state.authUser = action.payload.data
         })
+        builder.addMatcher(authApi.endpoints.getMe.matchRejected, state => {
+            state.authUser = null
+        })
     }
 })
 
