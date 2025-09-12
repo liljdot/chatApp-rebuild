@@ -7,6 +7,24 @@ interface GetMeResponseType {
     data: User
 }
 
+interface SignupRequestType {
+    username: string
+    fullName: string
+    password: string
+    confirmPassword: string
+    gender: string
+}
+
+interface SignupResponseType {
+    id: string
+    username: string
+    fullName: string
+    gender: string
+    profilePic: string
+    createdAt: Date
+    updatedAt: Date
+}
+
 export const authApi = createApi({
     reducerPath: "api/authApi",
     baseQuery: fetchBaseQuery({
@@ -17,8 +35,17 @@ export const authApi = createApi({
             query: () => ({
                 url: "me"
             })
+        }),
+        signup: builder.mutation<SignupResponseType, SignupRequestType>({
+            query: data => ({
+                url: "signup",
+                body: data
+            })
         })
     })
 })
 
-export const { useGetMeQuery } = authApi
+export const {
+    useGetMeQuery,
+    useSignupMutation
+} = authApi
