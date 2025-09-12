@@ -10,12 +10,12 @@ interface GetMeResponseType {
 export const authApi = createApi({
     reducerPath: "api/authApi",
     baseQuery: fetchBaseQuery({
-        baseUrl: "/api/"
+        baseUrl: "/api/auth/"
     }),
     endpoints: builder => ({
         getMe: builder.query<GetMeResponseType, undefined>({
             query: () => ({
-                url: "auth/me"
+                url: "me"
             })
         })
     })
