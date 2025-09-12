@@ -2,12 +2,16 @@ import z from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import GenderCheckbox from "@/components/ui/GenderCheckbox"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import TextInput from "@/components/ui/TextInput"
+import { useSignupMutation, type SignupError } from "@/services/api/authApi"
 
 const Signup = () => {
+    const navigate = useNavigate()
+
     const signupSchema = z.object({
-        fullName: z.string(),
-        username: z.string(),
+        fullName: z.string().min(1),
+        username: z.string().min(1),
         password: z.string().min(8),
         confirmPassword: z.string(),
         gender: z.string().refine(gender => (gender === "male" || gender === "female"), {
@@ -15,7 +19,7 @@ const Signup = () => {
         })
     })
         .refine(data => data.password === data.confirmPassword, {
-            message: "Passwords do not match",
+            error: "Passwords do not match",
             path: ["confirmPassword"]
         })
 
@@ -23,7 +27,17 @@ const Signup = () => {
         resolver: zodResolver(signupSchema)
     })
 
-    const onSubmit = form.handleSubmit(data => console.log(data))
+    const [mutation] = useSignupMutation()
+
+    const onSubmit = form.handleSubmit(data => {
+        return mutation(data).unwrap()
+            .then(() => navigate("/"))
+            .catch((err: SignupError) => {
+                form.setError("root", {
+                    message: err.mesage
+                })
+            })
+    })
 
     return (
         <>
@@ -39,11 +53,12 @@ const Signup = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Full Name</span>
                             </label>
-                            <input
+                            <TextInput
+                                control={form.control}
+                                name="fullName"
                                 type="text"
                                 placeholder="John Doe"
                                 className="w-full input input-bordered h-10"
-                                {...form.register("fullName")}
                             />
                             {
                                 form.formState.errors.fullName && <p className="text-red">{form.formState.errors.fullName.message}</p>
@@ -54,11 +69,12 @@ const Signup = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Username</span>
                             </label>
-                            <input
+                            <TextInput
+                                control={form.control}
+                                name="username"
                                 type="text"
                                 placeholder="johndoe"
                                 className="w-full input input-bordered h-10"
-                                {...form.register("username")}
                             />
                             {
                                 form.formState.errors.username && <p className="text-red">{form.formState.errors.username.message}</p>
@@ -69,11 +85,12 @@ const Signup = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Password</span>
                             </label>
-                            <input
+                            <TextInput
+                                control={form.control}
+                                name="password"
                                 type="password"
                                 placeholder="Enter password"
                                 className="w-full input input-bordered h-10"
-                                {...form.register("password")}
                             />
                             {
                                 form.formState.errors.password && <p className="text-red">{form.formState.errors.password.message}</p>
@@ -84,11 +101,12 @@ const Signup = () => {
                             <label className="label p-2">
                                 <span className="text-base label-text">Confirm Password</span>
                             </label>
-                            <input
+                            <TextInput
+                                control={form.control}
+                                name="confirmPassword"
                                 type="password"
                                 placeholder="Confirm password"
                                 className="w-full input input-bordered h-10"
-                                {...form.register("confirmPassword")}
                             />
                             {
                                 form.formState.errors.confirmPassword && <p className="text-red">{form.formState.errors.confirmPassword.message}</p>
@@ -96,7 +114,10 @@ const Signup = () => {
                         </div>
 
                         <div className="mt-4">
-                            <GenderCheckbox />
+                            <GenderCheckbox
+                                name="gender"
+                                control={form.control}
+                            />
                             {
                                 form.formState.errors.gender && <p className="text-red">{form.formState.errors.gender.message}</p>
                             }
@@ -110,8 +131,14 @@ const Signup = () => {
                         <div>
                             <button
                                 type="submit"
-                                className="btn btn-block btn-sm mt-2 bg-blue-600 border-none">
-                                Sign Up
+                                className="btn btn-block btn-sm mt-2 bg-blue-600 border-none"
+                                disabled={form.formState.isSubmitting}
+                            >
+                                {
+                                    form.formState.isSubmitting
+                                        ? <span className="loading loading-spinner loading-xl"></span>
+                                        : "Sign Up"
+                                }
                             </button>
                         </div>
                         {
