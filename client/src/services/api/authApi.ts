@@ -16,13 +16,23 @@ interface SignupRequestType {
 }
 
 interface SignupResponseType {
-    id: string
-    username: string
-    fullName: string
-    gender: string
-    profilePic: string
-    createdAt: Date
-    updatedAt: Date
+    status: number
+    message: string
+    data: {
+        id: string
+        username: string
+        fullName: string
+        gender: string
+        profilePic: string
+        createdAt: Date
+        updatedAt: Date
+    }
+}
+
+export interface SignupError {
+    status: number
+    mesage: string
+    error: string
 }
 
 export const authApi = createApi({
@@ -39,6 +49,7 @@ export const authApi = createApi({
         signup: builder.mutation<SignupResponseType, SignupRequestType>({
             query: data => ({
                 url: "signup",
+                method: "POST",
                 body: data
             })
         })
