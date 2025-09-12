@@ -32,9 +32,10 @@ const Signup = () => {
     const onSubmit = form.handleSubmit(data => {
         return mutation(data).unwrap()
             .then(() => navigate("/"))
-            .catch((err: SignupError) => {
+            .catch((err: { status: number, data: SignupError }) => {
+                console.log(err)
                 form.setError("root", {
-                    message: err.mesage
+                    message: err.data.message
                 })
             })
     })
