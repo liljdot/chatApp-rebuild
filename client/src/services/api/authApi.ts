@@ -31,7 +31,7 @@ interface SignupResponseType {
 
 export interface SignupError {
     status: number
-    mesage: string
+    message: string
     error: string
 }
 
