@@ -35,6 +35,31 @@ export interface SignupError {
     error: string
 }
 
+interface LoginRequestType {
+    username: string
+    password: string
+}
+
+interface LoginResponseType {
+    status: number
+    message: string
+    data: {
+        id: string
+        username: string
+        fullName: string
+        gender: string
+        profilePic: string
+        createdAt: Date
+        updatedAt: Date
+    }
+}
+
+export interface LoginError {
+    status: number
+    message: string
+    error: string
+}
+
 export const authApi = createApi({
     reducerPath: "api/authApi",
     baseQuery: fetchBaseQuery({
@@ -52,11 +77,19 @@ export const authApi = createApi({
                 method: "POST",
                 body: data
             })
+        }),
+        login: builder.mutation<LoginResponseType, LoginRequestType>({
+            query: data => ({
+                url: "login",
+                method: "POST",
+                body: data
+            })
         })
     })
 })
 
 export const {
     useGetMeQuery,
-    useSignupMutation
+    useSignupMutation,
+    useLoginMutation
 } = authApi
