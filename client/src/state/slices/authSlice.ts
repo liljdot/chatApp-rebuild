@@ -25,6 +25,10 @@ const authSlice = createSlice({
         builder.addMatcher(authApi.endpoints.getMe.matchRejected, state => {
             state.authUser = null
         })
+
+        builder.addMatcher(authApi.endpoints.logout.matchPending, state => {
+            state.authUser = null
+        })
     }
 })
 
