@@ -14,7 +14,11 @@ const RequireAuth: React.FC = () => {
     if (error) {
         console.log(error)
 
-        return <Navigate to={"/login"}/>
+        return <Navigate to={"/login"} />
+    }
+
+    if (!authUser) {
+        return <Navigate to={"/login"} />
     }
 
     return (
