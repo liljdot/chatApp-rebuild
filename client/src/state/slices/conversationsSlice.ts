@@ -1,4 +1,5 @@
 import type { ConversationForList } from "@/features/conversation/types";
+import { conversationsApi } from "@/services/api/conversationsApi";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: {
@@ -13,6 +14,11 @@ const conversationsSlice = createSlice({
     name: "conversations",
     initialState,
     reducers: {},
+    extraReducers: builder => {
+        builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
+            state.conversations = action.payload
+        })
+    }
 })
 
 export const {
