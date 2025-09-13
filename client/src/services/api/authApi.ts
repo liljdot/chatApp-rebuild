@@ -60,6 +60,10 @@ export interface LoginError {
     error: string
 }
 
+interface LogoutResponseType {
+    status: number
+}
+
 export const authApi = createApi({
     reducerPath: "api/authApi",
     baseQuery: fetchBaseQuery({
@@ -84,6 +88,12 @@ export const authApi = createApi({
                 method: "POST",
                 body: data
             })
+        }),
+        logout: builder.mutation<LogoutResponseType, undefined>({
+            query: () => ({
+                url: "logout",
+                method: "POST",
+            })
         })
     })
 })
@@ -91,5 +101,6 @@ export const authApi = createApi({
 export const {
     useGetMeQuery,
     useSignupMutation,
-    useLoginMutation
+    useLoginMutation,
+    useLogoutMutation
 } = authApi
