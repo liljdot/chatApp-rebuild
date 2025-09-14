@@ -1,3 +1,4 @@
+import Form from "@/components/ui/Form"
 import TextInput from "@/components/ui/TextInput"
 import { useLoginMutation, type LoginError } from "@/services/api/authApi"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -31,7 +32,10 @@ const LoginForm: React.FC = () => {
     })
 
     return (
-        <form onSubmit={onSubmit}>
+        <Form
+            form={form}
+            onSubmit={onSubmit}
+        >
             <div>
                 <label className="label p-2">
                     <span className="text-base label-text">Username</span>
@@ -79,10 +83,7 @@ const LoginForm: React.FC = () => {
                     }
                 </button>
             </div>
-            {
-                form.formState.errors.root && <p className="text-red-500">{form.formState.errors.root.message}</p>
-            }
-        </form>
+        </Form>
     )
 }
 
