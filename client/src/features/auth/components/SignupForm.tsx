@@ -1,3 +1,4 @@
+import Form from "@/components/ui/Form"
 import GenderCheckbox from "@/components/ui/GenderCheckbox"
 import TextInput from "@/components/ui/TextInput"
 import { useSignupMutation, type SignupError } from "@/services/api/authApi"
@@ -42,7 +43,10 @@ const SignupForm: React.FC = () => {
 
     return (
         <>
-            <form onSubmit={onSubmit}>
+            <Form
+                form={form}
+                onSubmit={onSubmit}
+            >
                 <div>
                     <label className="label p-2">
                         <span className="text-base label-text">Full Name</span>
@@ -135,10 +139,7 @@ const SignupForm: React.FC = () => {
                         }
                     </button>
                 </div>
-                {
-                    form.formState.errors.root && <p className="text-red">{form.formState.errors.root.message}</p>
-                }
-            </form>
+            </Form>
         </>
     )
 }
