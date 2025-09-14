@@ -10,11 +10,9 @@ const ConversationsList: React.FC<Props> = ({ conversations }) => {
     return (
         <>
             <div className="py-2 flex flex-col overflow-auto">
-                <ConversationTile />
-                <ConversationTile />
-                <ConversationTile />
-                <ConversationTile />
-                <ConversationTile />
+                {
+                    conversations.map(c => <ConversationTile conversation={c} />)
+                }
             </div>
         </>
     )
