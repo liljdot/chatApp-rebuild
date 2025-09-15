@@ -16,7 +16,7 @@ const conversationsSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
-            state.conversations = action.payload
+            state.conversations = action.payload.data
         })
     }
 })
