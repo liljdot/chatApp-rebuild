@@ -7,6 +7,7 @@ import { useSelector } from "react-redux"
 import type { RootState } from "@/state/store"
 import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
 import { skipToken } from "@reduxjs/toolkit/query"
+import type { User } from "@/features/auth/types"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
@@ -15,7 +16,9 @@ interface ConversationFieldProps {
     userId?: number
 }
 
-interface ConversationFieldHeaderProps { }
+interface ConversationFieldHeaderProps {
+    user: User
+}
 
 interface MessagesContainerProps {
     isLoading: boolean
@@ -40,7 +43,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                     ? <NoConversationSelected />
                     : (
                         <>
-                            <ConversationFieldHeader />
+                            <ConversationFieldHeader user={selectedConversation!.User[0]} />
                             <MessagesContainer
                                 isLoading={getMessagesIsLoading || getMessagesIsFetching}
                                 messages={selectedConversation!.Message}
@@ -53,20 +56,20 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     )
 }
 
-const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = () => {
+const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({ user }) => {
 
     return (
         <>
             <div className="flex justify-center bg-sky-500 px-4 py-2 mb-2">
                 <div className="flex items-center gap-2">
                     <Avatar online>
-                        <AvatarImage className="rounded-full" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp">
+                        <AvatarImage className="rounded-full" src={user.profilePic}>
 
                         </AvatarImage>
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-200">John Doe</span>
+                        <span className="text-sm font-semibold text-slate-200">{user.fullName}</span>
                     </div>
                 </div>
             </div>
