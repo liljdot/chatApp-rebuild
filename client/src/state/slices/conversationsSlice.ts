@@ -22,6 +22,15 @@ const conversationsSlice = createSlice({
         builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
             state.conversations = action.payload.data
         })
+        builder.addMatcher(conversationsApi.endpoints.getConversationMessages.matchFulfilled, (state, action) => {
+            state.conversations = state.conversations.map(c => c.id != action.meta.arg.originalArgs
+                ? c
+                : {
+                    ...c,
+                    Message: action.payload.data
+                }
+            )
+        })
     }
 })
 
