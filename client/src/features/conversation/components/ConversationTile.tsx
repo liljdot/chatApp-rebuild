@@ -1,15 +1,31 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui";
 import type { ConversationForList } from "../types";
+import { useSelector } from "react-redux";
+import { useAppDispatch, type RootState } from "@/state/store";
+import { cn } from "@/lib/utils";
+import { setSelectedConversation } from "@/state/slices/conversationsSlice";
 
 interface Props {
     conversation: ConversationForList
 }
 
 const ConversationTile: React.FC<Props> = ({ conversation }) => {
+    const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
+    const isSelected = selectedConversationId == conversation.id
+
+    const dispatch = useAppDispatch()
 
     return (
         <>
-            <div className="flex gap-2 items-center hover:bg-sky-500 rounded px-2 py-1 cursor-pointer">
+            <div
+                className={cn(
+                    "flex gap-2 items-center hover:bg-sky-500 rounded px-2 py-1 cursor-pointer",
+                    {
+                        "bg-sky-500": isSelected
+                    }
+                )}
+                onClick={() => dispatch(setSelectedConversation(conversation.id))}
+            >
                 <Avatar className="size-12" online>
                     <AvatarImage src={conversation.User[0].profilePic} className="rounded-full" />
                     <AvatarFallback>CN</AvatarFallback>
