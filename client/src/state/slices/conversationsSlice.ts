@@ -1,6 +1,6 @@
 import type { ConversationForList } from "@/features/conversation/types";
 import { conversationsApi } from "@/services/api/conversationsApi";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
     conversations: ConversationForList[],
@@ -13,7 +13,11 @@ const initialState: {
 const conversationsSlice = createSlice({
     name: "conversations",
     initialState,
-    reducers: {},
+    reducers: {
+        setSelectedConversation: (state, action: PayloadAction<ConversationForList["id"] | null>) => {
+            state.selectedConversationId = action.payload
+        }
+    },
     extraReducers: builder => {
         builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
             state.conversations = action.payload.data
@@ -23,7 +27,7 @@ const conversationsSlice = createSlice({
 
 export const {
     reducer: conversationSliceReducer,
-    actions: conversationSliceActions
+    actions: { setSelectedConversation }
 } = conversationsSlice
 
 export default conversationsSlice
