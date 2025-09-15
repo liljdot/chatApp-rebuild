@@ -2,27 +2,53 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import type { ConversationForList } from "../types"
 import MessageBubble from "./MessageBubble"
 import MessageInput from "./MessageInput"
+import NoConversationSelected from "./NoConversationSelected"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/state/store"
+import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
+import { skipToken } from "@reduxjs/toolkit/query"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
     setConversationFieldOpen: (value: boolean) => void
-    conversationId: ConversationForList["id"]
+    conversationId: ConversationForList["id"] | null
+    userId?: number
 }
 
 interface ConversationFieldHeaderProps { }
 
-interface MessagesContainerProps { }
+interface MessagesContainerProps {
+    isLoading: boolean
+    messages: ConversationForList["Message"]
+}
 
 const ConversationField: React.FC<ConversationFieldProps> = ({
     conversationFieldOpen,
     setConversationFieldOpen,
-    conversationId
+    conversationId,
+    userId
 }) => {
+    const { conversations } = useSelector((state: RootState) => state.conversations)
+    const selectedConversation = conversations.find(c => c.id == conversationId)
+
+    const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
+
     return (
         <div className={`md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out ${conversationFieldOpen ? "max-w-screen w-75" : "max-w-0 overflow-hidden"}`}>
-            <ConversationFieldHeader />
-            <MessagesContainer />
-            <MessageInput />
+            {
+                !conversationId && !userId
+                    ? <NoConversationSelected />
+                    : (
+                        <>
+                            <ConversationFieldHeader />
+                            <MessagesContainer
+                                isLoading={getMessagesIsLoading || getMessagesIsFetching}
+                                messages={selectedConversation!.Message}
+                            />
+                            <MessageInput />
+                        </>
+                    )
+            }
         </div>
     )
 }
@@ -48,23 +74,17 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = () => {
     )
 }
 
-const MessagesContainer: React.FC<MessagesContainerProps> = () => {
+const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoading }) => {
 
     return (
         <>
             <div className="flex-1 px-4 overflow-auto">
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
-                <MessageBubble />
+                {
+                    isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
+                }
+                {
+                    messages.map(message => <MessageBubble message={message} />)
+                }
             </div>
         </>
     )
