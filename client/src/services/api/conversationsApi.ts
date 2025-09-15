@@ -1,10 +1,16 @@
-import type { ConversationForList } from "@/features/conversation/types";
+import type { ConversationForList, MessageForConversation } from "@/features/conversation/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface GetConversationsResponseType {
     status: number
     message: string
     data: ConversationForList[]
+}
+
+interface GetConversationMessagesResponseType {
+    status: number
+    message: string
+    data: MessageForConversation[]
 }
 
 export const conversationsApi = createApi({
@@ -17,10 +23,16 @@ export const conversationsApi = createApi({
             query: () => ({
                 url: "conversations"
             })
+        }),
+        getConversationMessages: builder.query<GetConversationMessagesResponseType, ConversationForList["id"]>({
+            query: conversationId => ({
+                url: `${conversationId}`
+            })
         })
     })
 })
 
 export const {
-    useGetConversationsQuery
+    useGetConversationsQuery,
+    useGetConversationMessagesQuery
 } = conversationsApi
