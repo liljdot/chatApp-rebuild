@@ -1,3 +1,4 @@
+import type { User } from "@/features/auth/types";
 import type { ConversationForList, MessageForConversation } from "@/features/conversation/types";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
@@ -11,6 +12,17 @@ interface GetConversationMessagesResponseType {
     status: number
     message: string
     data: MessageForConversation[]
+}
+
+interface SendMessageRequestType {
+    recipientId: User["id"]
+    message: string
+}
+
+interface SendMessageResponseType {
+    status: number
+    message: string
+    data: MessageForConversation
 }
 
 export const conversationsApi = createApi({
@@ -28,11 +40,21 @@ export const conversationsApi = createApi({
             query: conversationId => ({
                 url: `${conversationId}`
             })
+        }),
+        sendMessage: builder.mutation<SendMessageResponseType, SendMessageRequestType>({
+            query: data => ({
+                url: `send/${data.recipientId}`,
+                method: "POST",
+                body: {
+                    message: data.message
+                }
+            })
         })
     })
 })
 
 export const {
     useGetConversationsQuery,
-    useGetConversationMessagesQuery
+    useGetConversationMessagesQuery,
+    useSendMessageMutation
 } = conversationsApi
