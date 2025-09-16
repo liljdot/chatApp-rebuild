@@ -3,6 +3,7 @@ import type { MessageForConversation } from "../types"
 import type { User } from "@/features/auth/types"
 import { useSelector } from "react-redux"
 import type { RootState } from "@/state/store"
+import { getTime } from "@/lib/utils"
 
 interface Props {
     message: MessageForConversation
@@ -22,7 +23,7 @@ const MessageBubble: React.FC<Props> = ({ message, targetUser }) => {
 
             <div className="chat-bubble text-white bg-sky-500">{message.body}</div>
 
-            <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">{"12:34"}</div>
+            <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">{getTime(message.createdAt)}</div>
         </div>
     )
 }
