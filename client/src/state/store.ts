@@ -4,6 +4,7 @@ import { authSliceReducer } from "./slices/authSlice"
 import { authApi } from "@/services/api/authApi"
 import { conversationSliceReducer } from "./slices/conversationsSlice"
 import { conversationsApi } from "@/services/api/conversationsApi"
+import listenerMiddleware from "@/services/middleware/listenerMiddleware"
 
 const store = configureStore({
     reducer: {
@@ -12,7 +13,7 @@ const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [conversationsApi.reducerPath]: conversationsApi.reducer
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().concat(authApi.middleware, conversationsApi.middleware)
+    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(authApi.middleware, conversationsApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>
