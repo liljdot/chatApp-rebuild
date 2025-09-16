@@ -11,7 +11,7 @@ const ConversationsList: React.FC<Props> = ({ conversations }) => {
         <>
             <div className="py-2 flex flex-col overflow-auto">
                 {
-                    conversations.map(c => <ConversationTile conversation={c} />)
+                    conversations.map(c => <ConversationTile conversation={c} key={c.id} />)
                 }
             </div>
         </>
