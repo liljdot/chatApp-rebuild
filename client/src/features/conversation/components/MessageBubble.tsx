@@ -1,15 +1,23 @@
 import { Avatar, AvatarImage } from "@/components/ui"
 import type { MessageForConversation } from "../types"
+import type { User } from "@/features/auth/types"
+import { useSelector } from "react-redux"
+import type { RootState } from "@/state/store"
 
 interface Props {
     message: MessageForConversation
+    targetUser: User
 }
 
-const MessageBubble: React.FC<Props> = ({ message }) => {
+const MessageBubble: React.FC<Props> = ({ message, targetUser }) => {
+    const { authUser } = useSelector((state: RootState) => state.auth)
+
+    const isOwnMessage = message.senderId === authUser?.id
+
     return (
-        <div className="chat chat-end flex flex-row-reverse">
+        <div className={`chat flex ${isOwnMessage ? "chat-end  flex-row-reverse" : "chat-start flex-row"}`}>
             <Avatar className="chat-image size-10">
-                <AvatarImage className="rounded-full" src="https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.webp" />
+                <AvatarImage className="rounded-full" src={`${isOwnMessage ? authUser.profilePic : targetUser.profilePic}`} />
             </Avatar>
 
             <div className="chat-bubble text-white bg-sky-500">{message.body}</div>
