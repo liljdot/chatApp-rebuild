@@ -1,4 +1,5 @@
 import type { ConversationForList } from "@/features/conversation/types";
+import { authApi } from "@/services/api/authApi";
 import { conversationsApi } from "@/services/api/conversationsApi";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
@@ -31,6 +32,10 @@ const conversationsSlice = createSlice({
                 }
             )
         })
+
+        builder.addMatcher(authApi.endpoints.signup.matchFulfilled, () => initialState)
+        builder.addMatcher(authApi.endpoints.login.matchFulfilled, () => initialState)
+        builder.addMatcher(authApi.endpoints.logout.matchFulfilled, () => initialState)
     }
 })
 
