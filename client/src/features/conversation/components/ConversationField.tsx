@@ -92,6 +92,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                         <MessageBubble
                             message={message}
                             targetUser={targetUser}
+                            key={message.id}
                         />
                     ))
                 }
