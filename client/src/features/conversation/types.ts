@@ -12,8 +12,8 @@ interface Conversation {
 
 interface Message {
     id: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
     body: string
     senderId: User["id"]
     conversationId: Conversation["id"]
