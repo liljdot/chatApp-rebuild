@@ -13,7 +13,10 @@ const store = configureStore({
         [authApi.reducerPath]: authApi.reducer,
         [conversationsApi.reducerPath]: conversationsApi.reducer
     },
-    middleware: getDefaultMiddleware => getDefaultMiddleware().prepend(listenerMiddleware.middleware).concat(authApi.middleware, conversationsApi.middleware)
+    middleware: getDefaultMiddleware =>
+        getDefaultMiddleware()
+            .prepend(listenerMiddleware.middleware)
+            .concat(authApi.middleware, conversationsApi.middleware)
 })
 
 export type RootState = ReturnType<typeof store.getState>
