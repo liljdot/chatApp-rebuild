@@ -17,12 +17,13 @@ interface ConversationFieldProps {
 }
 
 interface ConversationFieldHeaderProps {
-    user: User
+    targetUser: User
 }
 
 interface MessagesContainerProps {
     isLoading: boolean
     messages: ConversationForList["Message"]
+    targetUser: User
 }
 
 const ConversationField: React.FC<ConversationFieldProps> = ({
@@ -43,10 +44,11 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                     ? <NoConversationSelected />
                     : (
                         <>
-                            <ConversationFieldHeader user={selectedConversation!.User[0]} />
+                            <ConversationFieldHeader targetUser={selectedConversation!.User[0]} />
                             <MessagesContainer
                                 isLoading={getMessagesIsLoading || getMessagesIsFetching}
                                 messages={selectedConversation!.Message}
+                                targetUser={selectedConversation!.User[0]}
                             />
                             <MessageInput />
                         </>
@@ -56,20 +58,20 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     )
 }
 
-const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({ user }) => {
+const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({ targetUser }) => {
 
     return (
         <>
             <div className="flex justify-center bg-sky-500 px-4 py-2 mb-2">
                 <div className="flex items-center gap-2">
                     <Avatar online>
-                        <AvatarImage className="rounded-full" src={user.profilePic}>
+                        <AvatarImage className="rounded-full" src={targetUser.profilePic}>
 
                         </AvatarImage>
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-200">{user.fullName}</span>
+                        <span className="text-sm font-semibold text-slate-200">{targetUser.fullName}</span>
                     </div>
                 </div>
             </div>
@@ -77,7 +79,7 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({ user 
     )
 }
 
-const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoading }) => {
+const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoading, targetUser }) => {
 
     return (
         <>
@@ -86,7 +88,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                     isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
                 }
                 {
-                    messages.map(message => <MessageBubble message={message} />)
+                    messages.map(message => (
+                        <MessageBubble
+                            message={message}
+                            targetUser={targetUser}
+                        />
+                    ))
                 }
             </div>
         </>
