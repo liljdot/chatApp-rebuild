@@ -54,9 +54,28 @@ const conversationsSlice = createSlice({
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 conversationId: conversation.id,
-                body: message
+                body: message,
+                isOptimistic: true
             }
             conversation.Message.push(optimisticMessage)
+
+            state.conversations = [
+                conversation,
+                ...state.conversations.filter(c => c.id != conversation.id)
+            ]
+        })
+        builder.addMatcher(conversationsApi.endpoints.sendMessage.matchFulfilled, (state, action) => {
+            const { requestId, arg: { originalArgs: { recipientId } } } = action.meta
+            const sentMessage = action.payload.data
+
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+
+            if (conversationIndex == -1) {
+                return
+            }
+
+            const conversation = state.conversations[conversationIndex]
+            conversation.Message = conversation.Message.map(m => m.id == `tempId-${requestId}` ? sentMessage : m)
 
             state.conversations = [
                 conversation,
