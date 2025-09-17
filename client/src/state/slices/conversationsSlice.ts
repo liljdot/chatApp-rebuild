@@ -36,6 +36,33 @@ const conversationsSlice = createSlice({
         builder.addMatcher(authApi.endpoints.signup.matchFulfilled, () => initialState)
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, () => initialState)
         builder.addMatcher(authApi.endpoints.logout.matchFulfilled, () => initialState)
+        builder.addMatcher(conversationsApi.endpoints.sendMessage.matchPending, (state, action) => {
+            const { originalArgs: { message, recipientId }, } = action.meta.arg
+            const { requestId } = action.meta
+
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+
+            if (conversationIndex == -1) {
+                return
+            }
+
+            const conversation = state.conversations[conversationIndex]
+
+            const optimisticMessage = {
+                id: `tempId-${requestId}`,
+                senderId: conversation.participantIds.find(id => id != recipientId)!,
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                conversationId: conversation.id,
+                body: message
+            }
+            conversation.Message.push(optimisticMessage)
+
+            state.conversations = [
+                conversation,
+                ...state.conversations.filter(c => c.id != conversation.id)
+            ]
+        })
     }
 })
 
