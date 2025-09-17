@@ -50,7 +50,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                                 messages={selectedConversation!.Message}
                                 targetUser={selectedConversation!.User[0]}
                             />
-                            <MessageInput />
+                            <MessageInput targetUserId={selectedConversation!.User[0].id} />
                         </>
                     )
             }
