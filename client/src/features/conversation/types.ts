@@ -17,6 +17,7 @@ interface Message {
     body: string
     senderId: User["id"]
     conversationId: Conversation["id"]
+    isOptimistic?: boolean
 }
 
 export type ConversationForList = Conversation
