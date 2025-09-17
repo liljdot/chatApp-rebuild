@@ -21,7 +21,7 @@ const MessageBubble: React.FC<Props> = ({ message, targetUser }) => {
                 <AvatarImage className="rounded-full" src={`${isOwnMessage ? authUser.profilePic : targetUser.profilePic}`} />
             </Avatar>
 
-            <div className="chat-bubble text-white bg-sky-500">{message.body}</div>
+            <div className={`chat-bubble text-white ${message.isOptimistic ? "bg-purple-500" : "bg-sky-500"}`}>{message.body}</div>
 
             <div className="chat-footer opacity-50 text-xs flex gap-1 items-center">{getTime(message.createdAt)}</div>
         </div>
