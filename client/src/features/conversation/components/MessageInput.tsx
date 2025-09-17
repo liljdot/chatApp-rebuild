@@ -1,6 +1,7 @@
 import type { User } from "@/features/auth/types"
 import { useSendMessageMutation } from "@/services/api/conversationsApi"
 import { useState, type SyntheticEvent } from "react"
+import toast from "react-hot-toast"
 import { BsSend } from "react-icons/bs"
 
 interface Props {
@@ -20,7 +21,7 @@ const MessageInput: React.FC<Props> = ({ targetUserId }) => {
         }
 
         mutate({ message, recipientId: targetUserId }).unwrap()
-            .catch(err => console.log(err))
+            .catch((err: { status: number, data: { status: number, message: string, error: string } }) => toast.error(err.data.error))
         setMessage("")
     }
 
