@@ -3,6 +3,7 @@ import Home from "./pages/Home"
 import Login from "./pages/Login"
 import Signup from "./pages/Signup"
 import RequireAuth from "./features/auth/components/RequireAuth"
+import { Toaster } from "react-hot-toast"
 
 function App() {
 
@@ -16,6 +17,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
         </Routes>
+        <Toaster />
       </div>
     </>
   )
