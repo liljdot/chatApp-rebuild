@@ -82,6 +82,25 @@ const conversationsSlice = createSlice({
                 ...state.conversations.filter(c => c.id != conversation.id)
             ]
         })
+        builder.addMatcher(conversationsApi.endpoints.sendMessage.matchRejected, (state, action) => {
+            const { originalArgs: { recipientId }, } = action.meta.arg
+            const { requestId } = action.meta
+
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+
+            if (conversationIndex == -1) {
+                return
+            }
+
+            const conversation = state.conversations[conversationIndex]
+
+            conversation.Message = conversation.Message.filter(m => m.id != `tempId-${requestId}`)
+
+            state.conversations = [
+                conversation,
+                ...state.conversations.filter(c => c.id != conversation.id)
+            ]
+        })
     }
 })
 
