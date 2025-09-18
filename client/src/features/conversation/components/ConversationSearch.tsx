@@ -1,6 +1,7 @@
 import { IoSearchSharp } from "react-icons/io5"
 import type { ConversationForList } from "../types"
 import { useState, type EventHandler, type SyntheticEvent } from "react"
+import toast from "react-hot-toast"
 
 interface Props {
     conversations: ConversationForList[]
@@ -17,12 +18,21 @@ const ConversationSearch: React.FC<Props> = ({
         e.preventDefault()
 
         if (!search.trim()) {
-            return
+            return setDisplayedConversations(conversations)
         }
 
-        setDisplayedConversations(
-            conversations.filter(c => c.User[0].fullName.toLowerCase().includes(search.toLowerCase()))
-        )
+        if (search.length < 3) {
+            setDisplayedConversations(conversations)
+            return toast.error("Search term must be at least 3 characters long")
+        }
+
+        const filteredConversations = conversations.filter(c => c.User[0].fullName.toLowerCase().includes(search.toLowerCase()))
+
+        if (filteredConversations.length === 0) {
+            return toast.error("No conversations found")
+        }
+
+        setDisplayedConversations(filteredConversations)
     }
 
     return (
