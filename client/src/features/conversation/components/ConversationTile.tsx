@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useAppDispatch, type RootState } from "@/state/store";
 import { cn } from "@/lib/utils";
 import { setSelectedConversation } from "@/state/slices/conversationsSlice";
+import { useSocketContext } from "@/context/SocketContext";
 
 interface Props {
     conversation: ConversationForList
@@ -12,6 +13,9 @@ interface Props {
 const ConversationTile: React.FC<Props> = ({ conversation }) => {
     const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
     const isSelected = selectedConversationId == conversation.id
+
+    const { onlineUserIds } = useSocketContext()
+    const isOnline = onlineUserIds.includes(conversation.User[0].id)
 
     const dispatch = useAppDispatch()
 
@@ -26,7 +30,7 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
                 )}
                 onClick={() => dispatch(setSelectedConversation(conversation.id))}
             >
-                <Avatar className="size-12" online>
+                <Avatar className="size-12" online={isOnline}>
                     <AvatarImage src={conversation.User[0].profilePic} className="rounded-full" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
