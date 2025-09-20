@@ -8,6 +8,7 @@ import type { RootState } from "@/state/store"
 import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
 import { skipToken } from "@reduxjs/toolkit/query"
 import type { User } from "@/features/auth/types"
+import { useSocketContext } from "@/context/SocketContext"
 
 interface ConversationFieldProps {
     conversationFieldOpen: boolean
@@ -18,6 +19,7 @@ interface ConversationFieldProps {
 
 interface ConversationFieldHeaderProps {
     targetUser: User
+    targetUserIsOnline?: boolean
 }
 
 interface MessagesContainerProps {
@@ -35,6 +37,12 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const selectedConversation = conversations.find(c => c.id == conversationId)
 
+    const { onlineUserIds } = useSocketContext()
+
+    const targetUserIsOnline = selectedConversation
+        ? onlineUserIds.includes(selectedConversation.User[0].id)
+        : false
+
     const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
 
     return (
@@ -44,7 +52,10 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                     ? <NoConversationSelected />
                     : (
                         <>
-                            <ConversationFieldHeader targetUser={selectedConversation!.User[0]} />
+                            <ConversationFieldHeader
+                                targetUser={selectedConversation!.User[0]}
+                                targetUserIsOnline={targetUserIsOnline}
+                            />
                             <MessagesContainer
                                 isLoading={getMessagesIsLoading || getMessagesIsFetching}
                                 messages={selectedConversation!.Message}
@@ -58,20 +69,26 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     )
 }
 
-const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({ targetUser }) => {
+const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
+    targetUser,
+    targetUserIsOnline
+}) => {
 
     return (
         <>
             <div className="flex justify-center bg-sky-500 px-4 py-2 mb-2">
                 <div className="flex items-center gap-2">
-                    <Avatar online>
+                    <Avatar>
                         <AvatarImage className="rounded-full" src={targetUser.profilePic}>
 
                         </AvatarImage>
                         <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
                     <div className="flex flex-col">
-                        <span className="text-sm font-semibold text-slate-200">{targetUser.fullName}</span>
+                        <p className="text-sm font-semibold text-slate-200">{targetUser.fullName}</p>
+                        {
+                            targetUserIsOnline && <span className="text-xs font-medium text-slate-200">Online</span>
+                        }
                     </div>
                 </div>
             </div>
