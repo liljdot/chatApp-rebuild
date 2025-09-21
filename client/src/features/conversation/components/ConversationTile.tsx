@@ -38,7 +38,7 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
                 <div className="flex flex-col flex-1">
                     <div className="flex gap-3 justify-between">
                         <p className="font-bold text-gray-200">{conversation.User[0].fullName}</p>
-                        <span className="text-xl">{conversation.Message[conversation.Message.length - 1].body}</span>
+                        <span className="text-xl">{conversation.Message[0].body}</span>
                     </div>
                 </div>
             </div>
