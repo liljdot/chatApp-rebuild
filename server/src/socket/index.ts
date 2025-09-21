@@ -15,6 +15,10 @@ const io = new Server(server, {
 
 const userSocketMap: Record<string, string> = {}
 
+const getRecipientSocketId = (recipientId: string) => {
+    return userSocketMap[recipientId]
+}
+
 io.on("connection", socket => {
     console.log("a user connected", socket.id)
 
@@ -37,5 +41,6 @@ io.on("connection", socket => {
 export {
     app,
     io,
+    getRecipientSocketId,
     server
 }
