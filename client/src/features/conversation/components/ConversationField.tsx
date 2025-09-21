@@ -100,7 +100,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
 
     return (
         <>
-            <div className="flex-1 px-4 overflow-auto">
+            <div className="flex-1 flex flex-col-reverse px-4 overflow-auto">
                 {
                     isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
                 }
