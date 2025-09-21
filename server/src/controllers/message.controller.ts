@@ -103,7 +103,7 @@ const getConversationMessages = (req: Request, res: Response) => {
         where: { id: conversationId },
         include: {
             Message: {
-                orderBy: { createdAt: "asc" }
+                orderBy: { createdAt: "desc" }
             }
         }
     })
