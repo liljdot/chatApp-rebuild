@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
+import { getRecipientSocketId, io } from "../socket/index.js";
 
 const getConversations = (req: Request, res: Response) => {
     // must be used with requireAuth middleware which will either set req.user or req.error
@@ -288,11 +289,19 @@ const postSendMessage = (req: Request, res: Response) => {
                 data: { updatedAt: new Date() } // update conversation's updatedAt field to current time
             })
         ]))
-        .then(([message]) => res.status(201).json({
-            status: 201,
-            message: "Message sent successfully",
-            data: message
-        }))
+        .then(([message]) => {
+            const recipientSocketId = getRecipientSocketId(recipientId)
+            if (recipientSocketId) {
+                io.to(recipientSocketId).emit("newMessage", message)
+            }
+
+            return res.status(201).json({
+                status: 201,
+                message: "Message sent successfully",
+                data: message
+            })
+        }
+        )
         .catch(err => {
             console.log("postSendMessage error:", err)
 
