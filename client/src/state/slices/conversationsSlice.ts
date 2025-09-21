@@ -1,4 +1,4 @@
-import type { ConversationForList } from "@/features/conversation/types";
+import type { ConversationForList, MessageForConversation } from "@/features/conversation/types";
 import { authApi } from "@/services/api/authApi";
 import { conversationsApi } from "@/services/api/conversationsApi";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
@@ -17,6 +17,38 @@ const conversationsSlice = createSlice({
     reducers: {
         setSelectedConversation: (state, action: PayloadAction<ConversationForList["id"] | null>) => {
             state.selectedConversationId = action.payload
+        },
+        addNewConversationMessage: (state, action: PayloadAction<MessageForConversation>) => {
+            let conversation: ConversationForList
+
+            const conversationId = action.payload.conversationId
+            const conversationIndex = state.conversations.findIndex(c => c.id == conversationId)
+
+            if (conversationIndex != -1) {
+                conversation = state.conversations[conversationIndex]
+                conversation.Message.push(action.payload)
+
+                state.conversations = [
+                    conversation,
+                    ...state.conversations.filter(c => c.id != conversation.id)
+                ]
+                return
+            }
+
+            conversation = {
+                id: conversationId,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                participantIds: [action.payload.senderId],
+                messageIds: [action.payload.id],
+                User: [],
+                Message: [action.payload]
+            }
+
+            state.conversations = [
+                conversation,
+                ...state.conversations
+            ]
         }
     },
     extraReducers: builder => {
@@ -106,7 +138,7 @@ const conversationsSlice = createSlice({
 
 export const {
     reducer: conversationSliceReducer,
-    actions: { setSelectedConversation }
+    actions: { setSelectedConversation, addNewConversationMessage }
 } = conversationsSlice
 
 export default conversationsSlice
