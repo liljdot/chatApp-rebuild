@@ -102,16 +102,16 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
         <>
             <div className="flex-1 flex flex-col-reverse px-4 overflow-auto">
                 {
-                    isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
-                }
-                {
                     messages.map(message => (
                         <MessageBubble
-                            message={message}
-                            targetUser={targetUser}
-                            key={message.id}
+                        message={message}
+                        targetUser={targetUser}
+                        key={message.id}
                         />
                     ))
+                }
+                {
+                    isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
                 }
             </div>
         </>
