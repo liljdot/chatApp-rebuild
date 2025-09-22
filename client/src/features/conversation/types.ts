@@ -18,6 +18,7 @@ interface Message {
     senderId: User["id"]
     conversationId: Conversation["id"]
     isOptimistic?: boolean
+    isUnread?: boolean
 }
 
 export type ConversationForList = Conversation
