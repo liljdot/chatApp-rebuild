@@ -26,7 +26,7 @@ const conversationsSlice = createSlice({
 
             if (conversationIndex != -1) {
                 conversation = state.conversations[conversationIndex]
-                conversation.Message.push(action.payload)
+                conversation.Message.unshift(action.payload)
 
                 state.conversations = [
                     conversation,
