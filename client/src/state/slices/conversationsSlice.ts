@@ -49,7 +49,39 @@ const conversationsSlice = createSlice({
                 conversation,
                 ...state.conversations
             ]
-        }
+        },
+        setMessageRead: ((state, action: PayloadAction<{ id: MessageForConversation["id"], conversationId: ConversationForList["id"] }>) => {
+            const { id, conversationId } = action.payload
+
+            // const conversationIndex = state.conversations.findIndex(c => c.id == conversationId)
+
+            // if (conversationIndex != -1) {
+            //     const conversation = state.conversations[conversationIndex]
+
+            //     conversation.Message = conversation.Message.map(m => m.id == id
+            //         ? {
+            //             ...m,
+            //             isUnread: false
+            //         }
+            //         : m)
+
+            //     state.conversations = state.conversations.map(c => c.id != conversationId ? c : conversation)
+            // }
+
+            state.conversations = state.conversations.map(c => c.id != conversationId
+                ? c
+                : {
+                    ...c,
+                    Message: c.Message.map(m => m.id != id
+                        ? m
+                        : {
+                            ...m,
+                            isUnread: false
+                        }
+                    )
+                }
+            )
+        })
     },
     extraReducers: builder => {
         builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
@@ -138,7 +170,7 @@ const conversationsSlice = createSlice({
 
 export const {
     reducer: conversationSliceReducer,
-    actions: { setSelectedConversation, addNewConversationMessage }
+    actions: { setSelectedConversation, addNewConversationMessage, setMessageRead }
 } = conversationsSlice
 
 export default conversationsSlice
