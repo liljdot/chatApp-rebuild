@@ -89,7 +89,7 @@ const conversationsSlice = createSlice({
                 body: message,
                 isOptimistic: true
             }
-            conversation.Message.push(optimisticMessage)
+            conversation.Message.unshift(optimisticMessage)
 
             state.conversations = [
                 conversation,
