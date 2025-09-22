@@ -11,7 +11,7 @@ const useListenMessages = () => {
     useEffect(() => {
         if (socket) {
             socket.on("newMessage", (message: MessageForConversation) => {
-                dispatch(addNewConversationMessage(message))
+                dispatch(addNewConversationMessage({ ...message, isUnread: true }))
             })
         }
     }, [
