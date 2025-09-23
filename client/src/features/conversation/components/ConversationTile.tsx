@@ -5,6 +5,7 @@ import { useAppDispatch, type RootState } from "@/state/store";
 import { cn } from "@/lib/utils";
 import { setSelectedConversation } from "@/state/slices/conversationsSlice";
 import { useSocketContext } from "@/context/SocketContext";
+import { useEffect, useState } from "react";
 
 interface Props {
     conversation: ConversationForList
@@ -14,10 +15,26 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
     const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
     const isSelected = selectedConversationId == conversation.id
 
+    const [unreadCount, setUnreadCount] = useState<number>(0)
+
     const { onlineUserIds } = useSocketContext()
     const isOnline = onlineUserIds.includes(conversation.User[0].id)
 
     const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        setUnreadCount(0)
+        for (const message of conversation.Message) {
+            if (message.isUnread) {
+                setUnreadCount(prev => prev + 1)
+            } else {
+                break
+            }
+        }
+    }, [
+        conversation.Message,
+        setUnreadCount
+    ])
 
     return (
         <>
@@ -38,7 +55,11 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
                 <div className="flex flex-col flex-1">
                     <div className="flex gap-3 justify-between">
                         <p className="font-bold text-gray-200">{conversation.User[0].fullName}</p>
-                        <span className="text-xl">{conversation.Message[0].body}</span>
+                        {
+                            unreadCount
+                                ? <div className="badge bg-orange-500 size-5 rounded-full">{unreadCount}</div>
+                                : <span className="text-xl">{conversation.Message[0].body}</span>
+                        }
                     </div>
                 </div>
             </div>
