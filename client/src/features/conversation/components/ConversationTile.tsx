@@ -23,14 +23,16 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
     const dispatch = useAppDispatch()
 
     useEffect(() => {
-        setUnreadCount(0)
+        let count = 0
         for (const message of conversation.Message) {
             if (message.isUnread) {
-                setUnreadCount(prev => prev + 1)
+                count++
             } else {
                 break
             }
         }
+
+        setUnreadCount(count)
     }, [
         conversation.Message,
         setUnreadCount
