@@ -4,7 +4,7 @@ import MessageBubble from "./MessageBubble"
 import MessageInput from "./MessageInput"
 import NoConversationSelected from "./NoConversationSelected"
 import { useSelector } from "react-redux"
-import type { RootState } from "@/state/store"
+import { useAppDispatch, type RootState } from "@/state/store"
 import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
 import { skipToken } from "@reduxjs/toolkit/query"
 import type { User } from "@/features/auth/types"
@@ -12,6 +12,8 @@ import { useSocketContext } from "@/context/SocketContext"
 import { useConversationFieldContext } from "@/context/ConversationFieldContext"
 import { cn } from "@/lib/utils"
 import { ChevronLeft } from "lucide-react"
+import type { EventHandler, SyntheticEvent } from "react"
+import { setSelectedConversation } from "@/state/slices/conversationsSlice"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
@@ -83,12 +85,18 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
     targetUserIsOnline,
     setConversationFieldOpen
 }) => {
+    const dispatch = useAppDispatch()
+
+    const handleGoBack: EventHandler<SyntheticEvent> = () => {
+        setConversationFieldOpen?.(false)
+        dispatch(setSelectedConversation(null))
+    }
 
     return (
         <div className="flex flex-row bg-sky-500 px-4 py-2 mb-2">
             <button
                 className="flex flex-row items-center md:hidden font-bold cursor-pointer"
-                onClick={() => setConversationFieldOpen?.(false)}
+                onClick={handleGoBack}
             >
                 <ChevronLeft size={24} />
                 Chats
