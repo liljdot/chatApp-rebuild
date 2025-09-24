@@ -9,10 +9,10 @@ import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi
 import { skipToken } from "@reduxjs/toolkit/query"
 import type { User } from "@/features/auth/types"
 import { useSocketContext } from "@/context/SocketContext"
+import { useConversationFieldContext } from "@/context/ConversationFieldContext"
+import { cn } from "@/lib/utils"
 
 interface ConversationFieldProps {
-    conversationFieldOpen: boolean
-    setConversationFieldOpen: (value: boolean) => void
     conversationId: ConversationForList["id"] | null
     userId?: number
 }
@@ -29,13 +29,13 @@ interface MessagesContainerProps {
 }
 
 const ConversationField: React.FC<ConversationFieldProps> = ({
-    conversationFieldOpen,
-    setConversationFieldOpen,
     conversationId,
     userId
 }) => {
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const selectedConversation = conversations.find(c => c.id == conversationId)
+
+    const { conversationFieldOpen } = useConversationFieldContext()
 
     const { onlineUserIds } = useSocketContext()
 
@@ -46,7 +46,13 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
 
     return (
-        <div className={`md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out ${conversationFieldOpen ? "max-w-screen w-75" : "max-w-0 overflow-hidden"}`}>
+        <div className={cn(
+            "md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out",
+            {
+                "max-w-screen w-75": conversationFieldOpen,
+                "max-w-0 overflow-hidden": !conversationFieldOpen
+            }
+        )}>
             {
                 !conversationId && !userId
                     ? <NoConversationSelected />
@@ -104,9 +110,9 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                 {
                     messages.map(message => (
                         <MessageBubble
-                        message={message}
-                        targetUser={targetUser}
-                        key={message.id}
+                            message={message}
+                            targetUser={targetUser}
+                            key={message.id}
                         />
                     ))
                 }
