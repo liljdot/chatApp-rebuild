@@ -11,6 +11,7 @@ import type { User } from "@/features/auth/types"
 import { useSocketContext } from "@/context/SocketContext"
 import { useConversationFieldContext } from "@/context/ConversationFieldContext"
 import { cn } from "@/lib/utils"
+import { ChevronLeft } from "lucide-react"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
@@ -20,6 +21,7 @@ interface ConversationFieldProps {
 interface ConversationFieldHeaderProps {
     targetUser: User
     targetUserIsOnline?: boolean
+    setConversationFieldOpen?: (value: boolean) => void
 }
 
 interface MessagesContainerProps {
@@ -35,7 +37,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const selectedConversation = conversations.find(c => c.id == conversationId)
 
-    const { conversationFieldOpen } = useConversationFieldContext()
+    const { conversationFieldOpen, setConversationFieldOpen } = useConversationFieldContext()
 
     const { onlineUserIds } = useSocketContext()
 
@@ -61,6 +63,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                             <ConversationFieldHeader
                                 targetUser={selectedConversation!.User[0]}
                                 targetUserIsOnline={targetUserIsOnline}
+                                setConversationFieldOpen={setConversationFieldOpen}
                             />
                             <MessagesContainer
                                 isLoading={getMessagesIsLoading || getMessagesIsFetching}
@@ -77,12 +80,20 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
 
 const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
     targetUser,
-    targetUserIsOnline
+    targetUserIsOnline,
+    setConversationFieldOpen
 }) => {
 
     return (
-        <>
-            <div className="flex justify-center bg-sky-500 px-4 py-2 mb-2">
+        <div className="flex flex-row bg-sky-500 px-4 py-2 mb-2">
+            <button
+                className="flex flex-row items-center md:hidden font-bold cursor-pointer"
+                onClick={() => setConversationFieldOpen?.(false)}
+            >
+                <ChevronLeft size={24} />
+                Chats
+            </button>
+            <div className="flex flex-1 justify-center">
                 <div className="flex items-center gap-2">
                     <Avatar>
                         <AvatarImage className="rounded-full" src={targetUser.profilePic}>
@@ -98,7 +109,7 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
