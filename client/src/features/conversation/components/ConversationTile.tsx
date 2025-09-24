@@ -5,13 +5,14 @@ import { useAppDispatch, type RootState } from "@/state/store";
 import { cn } from "@/lib/utils";
 import { setSelectedConversation } from "@/state/slices/conversationsSlice";
 import { useSocketContext } from "@/context/SocketContext";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState, type EventHandler, type SyntheticEvent } from "react";
 
 interface Props {
     conversation: ConversationForList
+    setConversationFieldOpen?: () => void
 }
 
-const ConversationTile: React.FC<Props> = ({ conversation }) => {
+const ConversationTile: React.FC<Props> = ({ conversation, setConversationFieldOpen }) => {
     const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
     const isSelected = selectedConversationId == conversation.id
 
@@ -21,6 +22,11 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
     const isOnline = onlineUserIds.includes(conversation.User[0].id)
 
     const dispatch = useAppDispatch()
+
+    const handleClick: EventHandler<SyntheticEvent> = () => {
+        dispatch(setSelectedConversation(conversation.id))
+        setConversationFieldOpen?.()
+    }
 
     useEffect(() => {
         let count = 0
@@ -47,7 +53,7 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
                         "bg-sky-500": isSelected
                     }
                 )}
-                onClick={() => dispatch(setSelectedConversation(conversation.id))}
+                onClick={handleClick}
             >
                 <Avatar className="size-12" online={isOnline}>
                     <AvatarImage src={conversation.User[0].profilePic} className="rounded-full" />
@@ -71,4 +77,4 @@ const ConversationTile: React.FC<Props> = ({ conversation }) => {
     )
 }
 
-export default ConversationTile;
+export default memo(ConversationTile);
