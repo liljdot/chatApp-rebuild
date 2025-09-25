@@ -1,3 +1,4 @@
+import { baseURL } from "@/services/api/host"
 import type { RootState } from "@/state/store"
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from "react"
 import { useSelector } from "react-redux"
@@ -33,7 +34,8 @@ const SocketContextProvider: React.FC<SocketContextProviderProps> = ({ children 
 
     useEffect(() => {
         if (authUser) {
-            const socket = io("http://localhost:3000", {// TODO: change to dynamic url based on environment
+            console.log(baseURL)
+            const socket = io(import.meta.env.MODE == "development" ? __SOCKET_URL__ : "/", {// TODO: change to dynamic url based on environment
                 query: {
                     userId: authUser.id
                 }
