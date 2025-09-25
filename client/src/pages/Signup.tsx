@@ -1,6 +1,15 @@
 import SignupForm from "@/features/auth/components/SignupForm"
+import type { RootState } from "@/state/store"
+import { useSelector } from "react-redux"
+import { Navigate } from "react-router-dom"
 
 const Signup = () => {
+    const { authUser } = useSelector((state: RootState) => state.auth)
+    if (authUser) {
+        return (
+            <Navigate to={"/"} replace />
+        )
+    }
 
     return (
         <>

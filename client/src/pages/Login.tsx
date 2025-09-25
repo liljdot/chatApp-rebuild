@@ -1,6 +1,15 @@
 import LoginForm from "@/features/auth/components/LoginForm"
+import type { RootState } from "@/state/store"
+import { useSelector } from "react-redux"
+import { Navigate } from "react-router-dom"
 
 const Login = () => {
+    const { authUser } = useSelector((state: RootState) => state.auth)
+    if (authUser) {
+        return (
+            <Navigate to={"/"} replace />
+        )
+    }
 
     return (
         <>
