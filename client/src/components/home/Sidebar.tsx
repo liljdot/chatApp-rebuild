@@ -26,25 +26,27 @@ const Sidebar: React.FC = () => {
 
     return (
         <div className={cn(
-            `border-r border-slate-500 p-4 flex flex-col w-screen md:w-auto md:p-4 md:max-w-100 transition-width duration-500 ease-in-out`,
+            `border-r border-slate-500  md:p-4 md:max-w-100 transition-width duration-500 ease-in-out`,
             {
                 "max-w-0 px-0 overflow-y-hidden": conversationFieldOpen,
                 "max-w-screen": !conversationFieldOpen
             }
         )}>
-            <ConversationSearch
-                conversations={conversations}
-                setDisplayedConversations={setDisplayedConversations}
-            />
-            <div className="divider px-3"></div>
-            {
-                isLoading ?
-                    <span className="loading loading-spinner loading-xl mx-auto"></span>
-                    : <ConversationsList conversations={displayedConversations || []} />
-            }
-            <div className="mt-auto flex flex-col space-y-4">
-                <UsersSection />
-                <LogoutButton />
+            <div className="flex flex-col p-4 h-full w-screen md:w-auto md:max-w-100">
+                <ConversationSearch
+                    conversations={conversations}
+                    setDisplayedConversations={setDisplayedConversations}
+                />
+                <div className="divider px-3"></div>
+                {
+                    isLoading ?
+                        <span className="loading loading-spinner loading-xl mx-auto"></span>
+                        : <ConversationsList conversations={displayedConversations || []} />
+                }
+                <div className="mt-auto flex flex-col space-y-4">
+                    <UsersSection />
+                    <LogoutButton />
+                </div>
             </div>
         </div>
     )
