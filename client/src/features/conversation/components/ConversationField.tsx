@@ -51,31 +51,33 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
 
     return (
         <div className={cn(
-            "md:min-w-[450px] flex flex-col transition-width duration-500 ease-in-out",
+            "md:min-w-[450px] transition-width duration-500 ease-in-out",
             {
                 "max-w-screen w-screen md:w-75": conversationFieldOpen,
                 "max-w-0 overflow-hidden": !conversationFieldOpen
             }
         )}>
-            {
-                !conversationId && !userId
-                    ? <NoConversationSelected />
-                    : (
-                        <>
-                            <ConversationFieldHeader
-                                targetUser={selectedConversation!.User[0]}
-                                targetUserIsOnline={targetUserIsOnline}
-                                setConversationFieldOpen={setConversationFieldOpen}
-                            />
-                            <MessagesContainer
-                                isLoading={getMessagesIsLoading || getMessagesIsFetching}
-                                messages={selectedConversation!.Message}
-                                targetUser={selectedConversation!.User[0]}
-                            />
-                            <MessageInput targetUserId={selectedConversation!.User[0].id} />
-                        </>
-                    )
-            }
+            <div className="flex flex-col h-full w-screen md:w-75">
+                {
+                    !conversationId && !userId
+                        ? <NoConversationSelected />
+                        : (
+                            <>
+                                <ConversationFieldHeader
+                                    targetUser={selectedConversation!.User[0]}
+                                    targetUserIsOnline={targetUserIsOnline}
+                                    setConversationFieldOpen={setConversationFieldOpen}
+                                />
+                                <MessagesContainer
+                                    isLoading={getMessagesIsLoading || getMessagesIsFetching}
+                                    messages={selectedConversation!.Message}
+                                    targetUser={selectedConversation!.User[0]}
+                                />
+                                <MessageInput targetUserId={selectedConversation!.User[0].id} />
+                            </>
+                        )
+                }
+            </div>
         </div>
     )
 }
