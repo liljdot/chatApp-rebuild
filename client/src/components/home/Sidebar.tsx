@@ -3,6 +3,7 @@ import LogoutButton from "@/features/auth/components/LogoutButton"
 import ConversationSearch from "@/features/conversation/components/ConversationSearch"
 import ConversationsList from "@/features/conversation/components/ConversationsList"
 import UsersSection from "@/features/users/components/UsersSection"
+import { cn } from "@/lib/utils"
 import { useGetConversationsQuery } from "@/services/api/conversationsApi"
 import type { RootState } from "@/state/store"
 import { useEffect, useState } from "react"
@@ -13,7 +14,7 @@ const Sidebar: React.FC = () => {
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const { isLoading, error } = useGetConversationsQuery(undefined)
     const [displayedConversations, setDisplayedConversations] = useState(conversations)
-    const {conversationFieldOpen, setConversationFieldOpen} = useConversationFieldContext()
+    const { conversationFieldOpen, setConversationFieldOpen } = useConversationFieldContext()
 
     useEffect(() => {
         setDisplayedConversations(conversations)
@@ -24,7 +25,13 @@ const Sidebar: React.FC = () => {
     }
 
     return (
-        <div className={`border-r border-slate-500 p-4 flex flex-col w-screen md:w-auto ${conversationFieldOpen ? "max-w-0 px-0 overflow-y-hidden" : "max-w-screen"} md:p-4 md:max-w-100 transition-width duration-500 ease-in-out`}>
+        <div className={cn(
+            `border-r border-slate-500 p-4 flex flex-col w-screen md:w-auto md:p-4 md:max-w-100 transition-width duration-500 ease-in-out`,
+            {
+                "max-w-0 px-0 overflow-y-hidden": conversationFieldOpen,
+                "max-w-screen": !conversationFieldOpen
+            }
+        )}>
             <ConversationSearch
                 conversations={conversations}
                 setDisplayedConversations={setDisplayedConversations}
