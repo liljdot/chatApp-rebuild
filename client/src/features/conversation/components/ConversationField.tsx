@@ -53,11 +53,11 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
         <div className={cn(
             "md:min-w-[450px] transition-width duration-500 ease-in-out",
             {
-                "max-w-screen w-screen md:w-75": conversationFieldOpen,
+                "max-w-screen w-screen md:w-[450px]": conversationFieldOpen,
                 "max-w-0 overflow-hidden": !conversationFieldOpen
             }
         )}>
-            <div className="flex flex-col h-full w-screen md:w-75">
+            <div className="flex flex-col h-full w-screen md:w-full">
                 {
                     !conversationId && !userId
                         ? <NoConversationSelected />
