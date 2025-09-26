@@ -2,6 +2,7 @@ import { useConversationFieldContext } from "@/context/ConversationFieldContext"
 import LogoutButton from "@/features/auth/components/LogoutButton"
 import ConversationSearch from "@/features/conversation/components/ConversationSearch"
 import ConversationsList from "@/features/conversation/components/ConversationsList"
+import UsersSection from "@/features/users/components/UsersSection"
 import { useGetConversationsQuery } from "@/services/api/conversationsApi"
 import type { RootState } from "@/state/store"
 import { useEffect, useState } from "react"
@@ -34,7 +35,8 @@ const Sidebar: React.FC = () => {
                     <span className="loading loading-spinner loading-xl mx-auto"></span>
                     : <ConversationsList conversations={displayedConversations || []} />
             }
-            <div className="mt-auto">
+            <div className="mt-auto flex flex-col space-y-4">
+                <UsersSection />
                 <LogoutButton />
             </div>
         </div>
