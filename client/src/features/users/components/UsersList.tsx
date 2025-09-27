@@ -23,6 +23,10 @@ const UsersList: React.FC<Props> = ({
             </div> */}
 
             {
+                isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
+            }
+
+            {
                 users.map(user => (
                     <UserAvatar user={user} key={user.id} />
                 ))
