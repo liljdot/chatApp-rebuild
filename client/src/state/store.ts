@@ -6,11 +6,13 @@ import { conversationSliceReducer } from "./slices/conversationsSlice"
 import { conversationsApi } from "@/services/api/conversationsApi"
 import listenerMiddleware from "@/services/middleware/listenerMiddleware"
 import { usersApi } from "@/services/api/usersApi"
+import { usersSliceReducer } from "./slices/usersSlice"
 
 const store = configureStore({
     reducer: {
         auth: authSliceReducer,
         conversations: conversationSliceReducer,
+        users: usersSliceReducer,
         [authApi.reducerPath]: authApi.reducer,
         [conversationsApi.reducerPath]: conversationsApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer
