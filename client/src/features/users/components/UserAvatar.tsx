@@ -1,17 +1,25 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import { useSocketContext } from "@/context/SocketContext"
 import type { User } from "@/features/auth/types"
+import { setSelectedUserId } from "@/state/slices/usersSlice"
+import { useAppDispatch } from "@/state/store"
 
 interface Props {
     user: User
 }
 
 const UserAvatar: React.FC<Props> = ({ user }) => {
+    const dispatch = useAppDispatch()
+
     const { onlineUserIds } = useSocketContext()
     const userIsOnline = onlineUserIds.includes(user.id)
 
     return (
-        <div className="flex flex-col w-16 text-center justify-start items-center gap-1 shrink-0" key={user.id}>
+        <div
+            className="flex flex-col w-16 text-center justify-start items-center gap-1 shrink-0 hover:bg-gray-600/50 cursor-pointer"
+            key={user.id}
+            onClick={() => dispatch(setSelectedUserId(user.id))}
+        >
             <Avatar online={userIsOnline}>
                 <AvatarImage className="rounded-full" src={user.profilePic}>
 
