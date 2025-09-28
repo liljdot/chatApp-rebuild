@@ -2,20 +2,20 @@ import type { User } from "@/features/auth/types"
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 const initialState: {
-    selectedUserId: User["id"] | null
+    selectedUser: User | null
 } = {
-    selectedUserId: null
+    selectedUser: null
 }
 
 const usersSlice = createSlice({
     name: "users",
     initialState,
     reducers: {
-        setSelectedUserId: (state, action: PayloadAction<User["id"] | null>) => {
-            state.selectedUserId = action.payload
+        setSelectedUser: (state, action: PayloadAction<User | null>) => {
+            state.selectedUser = action.payload
         }
     }
 })
 
-export const { reducer: usersSliceReducer, actions: { setSelectedUserId } } = usersSlice
+export const { reducer: usersSliceReducer, actions: { setSelectedUser } } = usersSlice
 export default usersSlice
