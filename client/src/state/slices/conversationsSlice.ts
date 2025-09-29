@@ -37,8 +37,8 @@ const conversationsSlice = createSlice({
 
             conversation = {
                 id: conversationId,
-                createdAt: new Date(),
-                updatedAt: new Date(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
                 participantIds: [action.payload.senderId],
                 messageIds: [action.payload.id],
                 User: [],
@@ -135,6 +135,27 @@ const conversationsSlice = createSlice({
             const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
 
             if (conversationIndex == -1) {
+                const conversation: ConversationForList = {
+                    id: sentMessage.conversationId,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    participantIds: [sentMessage.senderId, recipientId],
+                    User: [{
+                        id: recipientId,
+                        username: "",
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        fullName: "",
+                        gender: "male",
+                        profilePic: ""
+                    }],
+                    messageIds: [sentMessage.id],
+                    Message: [sentMessage]
+                }
+                state.conversations = [
+                    conversation,
+                    ...state.conversations
+                ]
                 return
             }
 
