@@ -101,10 +101,10 @@ const conversationsSlice = createSlice({
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, () => initialState)
         builder.addMatcher(authApi.endpoints.logout.matchFulfilled, () => initialState)
         builder.addMatcher(conversationsApi.endpoints.sendMessage.matchPending, (state, action) => {
-            const { originalArgs: { message, recipientId }, } = action.meta.arg
+            const { originalArgs: { message, targetUser }, } = action.meta.arg
             const { requestId } = action.meta
 
-            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == targetUser.id)
 
             if (conversationIndex == -1) {
                 return
@@ -114,7 +114,7 @@ const conversationsSlice = createSlice({
 
             const optimisticMessage = {
                 id: `tempId-${requestId}`,
-                senderId: conversation.participantIds.find(id => id != recipientId)!,
+                senderId: conversation.participantIds.find(id => id != targetUser.id)!,
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
                 conversationId: conversation.id,
@@ -129,25 +129,25 @@ const conversationsSlice = createSlice({
             ]
         })
         builder.addMatcher(conversationsApi.endpoints.sendMessage.matchFulfilled, (state, action) => {
-            const { requestId, arg: { originalArgs: { recipientId } } } = action.meta
+            const { requestId, arg: { originalArgs: { targetUser } } } = action.meta
             const sentMessage = action.payload.data
 
-            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == targetUser.id)
 
             if (conversationIndex == -1) {
                 const conversation: ConversationForList = {
                     id: sentMessage.conversationId,
                     createdAt: new Date().toISOString(),
                     updatedAt: new Date().toISOString(),
-                    participantIds: [sentMessage.senderId, recipientId],
+                    participantIds: [sentMessage.senderId, targetUser.id],
                     User: [{
-                        id: recipientId,
-                        username: "",
+                        id: targetUser.id,
+                        username: targetUser.username,
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString(),
-                        fullName: "",
-                        gender: "male",
-                        profilePic: ""
+                        fullName: targetUser.fullName,
+                        gender: targetUser.gender,
+                        profilePic: targetUser.profilePic
                     }],
                     messageIds: [sentMessage.id],
                     Message: [sentMessage]
@@ -168,10 +168,10 @@ const conversationsSlice = createSlice({
             ]
         })
         builder.addMatcher(conversationsApi.endpoints.sendMessage.matchRejected, (state, action) => {
-            const { originalArgs: { recipientId }, } = action.meta.arg
+            const { originalArgs: { targetUser }, } = action.meta.arg
             const { requestId } = action.meta
 
-            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == recipientId)
+            const conversationIndex = state.conversations.findIndex(c => c.User[0].id == targetUser.id)
 
             if (conversationIndex == -1) {
                 return
