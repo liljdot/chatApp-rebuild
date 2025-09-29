@@ -8,6 +8,12 @@ interface GetConversationsResponseType {
     data: ConversationForList[]
 }
 
+interface GetConversationByUserIdResponseType {
+    status: number
+    message: string
+    data: ConversationForList
+}
+
 interface GetConversationMessagesResponseType {
     status: number
     message: string
@@ -36,6 +42,11 @@ export const conversationsApi = createApi({
                 url: "conversations"
             })
         }),
+        getConversationByUserId: builder.query<GetConversationByUserIdResponseType, User["id"]>({
+            query: userId => ({
+                url: `conversations/byUserId/${userId}`
+            })
+        }),
         getConversationMessages: builder.query<GetConversationMessagesResponseType, ConversationForList["id"]>({
             query: conversationId => ({
                 url: `${conversationId}`
@@ -55,6 +66,7 @@ export const conversationsApi = createApi({
 
 export const {
     useGetConversationsQuery,
+    useGetConversationByUserIdQuery,
     useGetConversationMessagesQuery,
     useSendMessageMutation
 } = conversationsApi
