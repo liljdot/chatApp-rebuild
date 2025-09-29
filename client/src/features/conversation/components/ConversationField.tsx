@@ -76,7 +76,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                                     messages={selectedConversation?.Message || []}
                                     targetUser={selectedConversation?.User[0] || targetUser!}
                                 />
-                                <MessageInput targetUserId={selectedConversation?.User[0].id || targetUser!.id} />
+                                <MessageInput targetUser={selectedConversation?.User[0] || targetUser!} />
                             </>
                         )
                 }
