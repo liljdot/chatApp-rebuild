@@ -5,10 +5,10 @@ import toast from "react-hot-toast"
 import { BsSend } from "react-icons/bs"
 
 interface Props {
-    targetUserId: User["id"]
+    targetUser: User
 }
 
-const MessageInput: React.FC<Props> = ({ targetUserId }) => {
+const MessageInput: React.FC<Props> = ({ targetUser }) => {
     const [message, setMessage] = useState<string>("")
 
     const [mutate] = useSendMessageMutation()
@@ -20,7 +20,7 @@ const MessageInput: React.FC<Props> = ({ targetUserId }) => {
             return
         }
 
-        mutate({ message, recipientId: targetUserId }).unwrap()
+        mutate({ message, targetUser }).unwrap()
             .catch((err: { status: number, data: { status: number, message: string, error: string } }) => toast.error(err.data.error))
         setMessage("")
     }
