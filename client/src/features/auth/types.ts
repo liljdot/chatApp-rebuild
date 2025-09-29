@@ -4,6 +4,6 @@ export interface User {
     gender: "male" | "female";
     id: string;
     profilePic: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt: string;
+    updatedAt: string;
 }

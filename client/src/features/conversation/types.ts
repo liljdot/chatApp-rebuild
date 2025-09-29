@@ -2,8 +2,8 @@ import type { User } from "../auth/types"
 
 interface Conversation {
     id: string
-    createdAt: Date
-    updatedAt: Date
+    createdAt: string
+    updatedAt: string
     participantIds: User["id"][]
     messageIds: Message["id"][]
     User: User[]
