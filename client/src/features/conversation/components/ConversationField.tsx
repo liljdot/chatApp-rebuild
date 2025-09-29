@@ -5,7 +5,7 @@ import MessageInput from "./MessageInput"
 import NoConversationSelected from "./NoConversationSelected"
 import { useSelector } from "react-redux"
 import { useAppDispatch, type RootState } from "@/state/store"
-import { useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
+import { useGetConversationByUserIdQuery, useGetConversationMessagesQuery } from "@/services/api/conversationsApi"
 import { skipToken } from "@reduxjs/toolkit/query"
 import type { User } from "@/features/auth/types"
 import { useSocketContext } from "@/context/SocketContext"
@@ -17,7 +17,7 @@ import { setSelectedConversation } from "@/state/slices/conversationsSlice"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
-    userId?: number
+    targetUser: User | null
 }
 
 interface ConversationFieldHeaderProps {
@@ -34,7 +34,7 @@ interface MessagesContainerProps {
 
 const ConversationField: React.FC<ConversationFieldProps> = ({
     conversationId,
-    userId
+    targetUser
 }) => {
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const selectedConversation = conversations.find(c => c.id == conversationId)
@@ -45,9 +45,12 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
 
     const targetUserIsOnline = selectedConversation
         ? onlineUserIds.includes(selectedConversation.User[0].id)
-        : false
+        : targetUser
+            ? onlineUserIds.includes(targetUser.id)
+            : false
 
     const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
+    const { isLoading: getConversationByUserIdIsLoading, data: conversationByUserIdResponse } = useGetConversationByUserIdQuery(conversationId ? skipToken : !targetUser ? skipToken : targetUser.id)
 
     return (
         <div className={cn(
@@ -59,21 +62,21 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
         )}>
             <div className="flex flex-col h-full w-screen md:w-full">
                 {
-                    !conversationId && !userId
+                    !conversationId && !targetUser
                         ? <NoConversationSelected />
                         : (
                             <>
                                 <ConversationFieldHeader
-                                    targetUser={selectedConversation!.User[0]}
+                                    targetUser={selectedConversation?.User[0] || targetUser!}
                                     targetUserIsOnline={targetUserIsOnline}
                                     setConversationFieldOpen={setConversationFieldOpen}
                                 />
                                 <MessagesContainer
-                                    isLoading={getMessagesIsLoading || getMessagesIsFetching}
-                                    messages={selectedConversation!.Message}
-                                    targetUser={selectedConversation!.User[0]}
+                                    isLoading={getMessagesIsLoading || getMessagesIsFetching || getConversationByUserIdIsLoading}
+                                    messages={selectedConversation?.Message || []}
+                                    targetUser={selectedConversation?.User[0] || targetUser!}
                                 />
-                                <MessageInput targetUserId={selectedConversation!.User[0].id} />
+                                <MessageInput targetUserId={selectedConversation?.User[0].id || targetUser!.id} />
                             </>
                         )
                 }
@@ -138,7 +141,9 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                     ))
                 }
                 {
-                    isLoading && <span className="loading loading-spinner loading-xl mx-auto"></span>
+                    isLoading
+                        ? <span className="loading loading-spinner loading-xl mx-auto"></span>
+                        : !messages.length && <h1>Send a message to start a conversation with ...</h1>
                 }
             </div>
         </>
