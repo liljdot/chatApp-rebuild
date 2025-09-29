@@ -21,7 +21,7 @@ interface GetConversationMessagesResponseType {
 }
 
 interface SendMessageRequestType {
-    recipientId: User["id"]
+    targetUser: User
     message: string
 }
 
@@ -54,7 +54,7 @@ export const conversationsApi = createApi({
         }),
         sendMessage: builder.mutation<SendMessageResponseType, SendMessageRequestType>({
             query: data => ({
-                url: `send/${data.recipientId}`,
+                url: `send/${data.targetUser.id}`,
                 method: "POST",
                 body: {
                     message: data.message
