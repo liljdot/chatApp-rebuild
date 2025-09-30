@@ -14,6 +14,7 @@ import { cn } from "@/lib/utils"
 import { ChevronLeft } from "lucide-react"
 import type { EventHandler, SyntheticEvent } from "react"
 import { setSelectedConversation } from "@/state/slices/conversationsSlice"
+import { setSelectedUser } from "@/state/slices/usersSlice"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
@@ -50,7 +51,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
             : false
 
     const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
-    const { isLoading: getConversationByUserIdIsLoading, data: conversationByUserIdResponse } = useGetConversationByUserIdQuery(conversationId ? skipToken : !targetUser ? skipToken : targetUser.id)
+    const { isLoading: getConversationByUserIdIsLoading, data: conversationByUserIdResponse, isFetching: getConversationByUserIdIsFetching } = useGetConversationByUserIdQuery(conversationId ? skipToken : !targetUser ? skipToken : targetUser.id, { refetchOnMountOrArgChange: true })
 
     return (
         <div className={cn(
@@ -72,7 +73,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
                                     setConversationFieldOpen={setConversationFieldOpen}
                                 />
                                 <MessagesContainer
-                                    isLoading={getMessagesIsLoading || getMessagesIsFetching || getConversationByUserIdIsLoading}
+                                    isLoading={getMessagesIsLoading || getMessagesIsFetching || getConversationByUserIdIsLoading || getConversationByUserIdIsFetching}
                                     messages={selectedConversation?.Message || []}
                                     targetUser={selectedConversation?.User[0] || targetUser!}
                                 />
@@ -95,6 +96,7 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
     const handleGoBack: EventHandler<SyntheticEvent> = () => {
         setConversationFieldOpen?.(false)
         dispatch(setSelectedConversation(null))
+        dispatch(setSelectedUser(null))
     }
 
     return (
@@ -143,7 +145,7 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                 {
                     isLoading
                         ? <span className="loading loading-spinner loading-xl mx-auto"></span>
-                        : !messages.length && <h1>Send a message to start a conversation with ...</h1>
+                        : !messages.length && <h1>Send a message to start a conversation with {targetUser.fullName}</h1>
                 }
             </div>
         </>
