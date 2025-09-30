@@ -104,12 +104,38 @@ const conversationsSlice = createSlice({
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, () => initialState)
         builder.addMatcher(authApi.endpoints.logout.matchFulfilled, () => initialState)
         builder.addMatcher(conversationsApi.endpoints.sendMessage.matchPending, (state, action) => {
-            const { originalArgs: { message, targetUser }, } = action.meta.arg
+            const { originalArgs: { message, targetUser, sender }, } = action.meta.arg
             const { requestId } = action.meta
 
             const conversationIndex = state.conversations.findIndex(c => c.User[0].id == targetUser.id)
 
             if (conversationIndex == -1) {
+                const optimisticMessage = {
+                    id: `tempId-${requestId}`,
+                    senderId: sender.id,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    conversationId: `tempId-${requestId}`,
+                    body: message,
+                    isOptimistic: true
+                }
+
+                const conversation: ConversationForList = {
+                    id: `tempId-${requestId}`,
+                    createdAt: new Date().toISOString(),
+                    updatedAt: new Date().toISOString(),
+                    participantIds: [sender.id, targetUser.id],
+                    User: [targetUser],
+                    messageIds: [`tempId-${requestId}`],
+                    Message: [optimisticMessage]
+                }
+
+                state.conversations = [
+                    conversation,
+                    ...state.conversations
+                ]
+                state.selectedConversationId = conversation.id
+
                 return
             }
 
@@ -164,10 +190,11 @@ const conversationsSlice = createSlice({
 
             const conversation = state.conversations[conversationIndex]
             conversation.Message = conversation.Message.map(m => m.id == `tempId-${requestId}` ? sentMessage : m)
+            conversation.id = sentMessage.conversationId
 
             state.conversations = [
                 conversation,
-                ...state.conversations.filter(c => c.id != conversation.id)
+                ...state.conversations.filter(c => c.User[0].id != targetUser.id)
             ]
         })
         builder.addMatcher(conversationsApi.endpoints.sendMessage.matchRejected, (state, action) => {
@@ -185,7 +212,10 @@ const conversationsSlice = createSlice({
             conversation.Message = conversation.Message.filter(m => m.id != `tempId-${requestId}`)
 
             state.conversations = [
-                conversation,
+                ...(conversation.Message.length
+                    ? [conversation]
+                    : []
+                ),
                 ...state.conversations.filter(c => c.id != conversation.id)
             ]
         })
