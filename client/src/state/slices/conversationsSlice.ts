@@ -96,6 +96,9 @@ const conversationsSlice = createSlice({
                 }
             )
         })
+        builder.addMatcher(conversationsApi.endpoints.getConversationByUserId.matchFulfilled, (state, action) => {
+            state.selectedConversationId = action.payload.data.id
+        })
 
         builder.addMatcher(authApi.endpoints.signup.matchFulfilled, () => initialState)
         builder.addMatcher(authApi.endpoints.login.matchFulfilled, () => initialState)
