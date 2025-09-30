@@ -1,8 +1,11 @@
 import type { User } from "@/features/auth/types"
 import { useSendMessageMutation } from "@/services/api/conversationsApi"
+import { setSelectedConversation } from "@/state/slices/conversationsSlice"
+import { useAppDispatch, type RootState } from "@/state/store"
 import { useState, type SyntheticEvent } from "react"
 import toast from "react-hot-toast"
 import { BsSend } from "react-icons/bs"
+import { useSelector } from "react-redux"
 
 interface Props {
     targetUser: User
@@ -11,6 +14,8 @@ interface Props {
 const MessageInput: React.FC<Props> = ({ targetUser }) => {
     const [message, setMessage] = useState<string>("")
 
+    const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
+    const dispatch = useAppDispatch()
     const [mutate] = useSendMessageMutation()
 
     const handleSubmit: React.EventHandler<SyntheticEvent> = e => {
@@ -21,6 +26,11 @@ const MessageInput: React.FC<Props> = ({ targetUser }) => {
         }
 
         mutate({ message, targetUser }).unwrap()
+            .then(res => {
+                if (!selectedConversationId) {
+                    dispatch(setSelectedConversation(res.data.conversationId))
+                }
+            })
             .catch((err: { status: number, data: { status: number, message: string, error: string } }) => toast.error(err.data.error))
         setMessage("")
     }
