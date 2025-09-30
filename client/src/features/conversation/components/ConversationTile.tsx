@@ -19,7 +19,9 @@ const ConversationTile: React.FC<Props> = ({ conversation, setConversationFieldO
     const [unreadCount, setUnreadCount] = useState<number>(0)
 
     const { onlineUserIds } = useSocketContext()
-    const isOnline = onlineUserIds.includes(conversation.User[0].id)
+    const isOnline = conversation.User[0]
+        ? onlineUserIds.includes(conversation.User[0].id)
+        : false
 
     const dispatch = useAppDispatch()
 
@@ -56,13 +58,13 @@ const ConversationTile: React.FC<Props> = ({ conversation, setConversationFieldO
                 onClick={handleClick}
             >
                 <Avatar className="size-12" online={isOnline}>
-                    <AvatarImage src={conversation.User[0].profilePic} className="rounded-full" />
+                    <AvatarImage src={conversation.User[0] ? conversation.User[0].profilePic : ""} className="rounded-full" />
                     <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
 
                 <div className="flex flex-col flex-1">
                     <div className="flex gap-3 justify-between">
-                        <p className="font-bold text-gray-200">{conversation.User[0].fullName}</p>
+                        <p className="font-bold text-gray-200">{conversation.User[0] ? conversation.User[0].fullName : "User"}</p>
                         {
                             unreadCount
                                 ? <div className="badge bg-orange-500 size-5 rounded-full">{unreadCount}</div>
