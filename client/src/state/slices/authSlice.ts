@@ -1,7 +1,7 @@
 import { authApi } from "@/services/api/authApi";
 import { createSlice } from "@reduxjs/toolkit";
 
-interface AuthUser {
+export interface AuthUser {
     id: string
     fullName: string
     profilePic: string
