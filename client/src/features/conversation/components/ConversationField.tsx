@@ -15,6 +15,7 @@ import { ChevronLeft } from "lucide-react"
 import type { EventHandler, SyntheticEvent } from "react"
 import { setSelectedConversation } from "@/state/slices/conversationsSlice"
 import { setSelectedUser } from "@/state/slices/usersSlice"
+import { TiMessages } from "react-icons/ti"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
@@ -145,7 +146,12 @@ const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoadi
                 {
                     isLoading
                         ? <span className="loading loading-spinner loading-xl mx-auto"></span>
-                        : !messages.length && <h1>Send a message to start a conversation with {targetUser.fullName}</h1>
+                        : !messages.length && (
+                            <div className="px-4 text-center sm:text-lg md:text-xl text-gray-200 font-semibold flex flex-1 flex-col items-center justify-center gap-2">
+                                <h1>Send a message to start a conversation with {targetUser.fullName}</h1>
+                                <TiMessages className="text-3xl md:text-6xl text-center" />
+                            </div>
+                        )
                 }
             </div>
         </>
