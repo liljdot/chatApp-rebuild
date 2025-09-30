@@ -1,5 +1,6 @@
 import type { User } from "@/features/auth/types";
 import type { ConversationForList, MessageForConversation } from "@/features/conversation/types";
+import type { AuthUser } from "@/state/slices/authSlice";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 interface GetConversationsResponseType {
@@ -21,6 +22,7 @@ interface GetConversationMessagesResponseType {
 }
 
 interface SendMessageRequestType {
+    sender: AuthUser
     targetUser: User
     message: string
 }
