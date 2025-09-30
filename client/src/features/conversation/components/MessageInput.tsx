@@ -14,6 +14,7 @@ interface Props {
 const MessageInput: React.FC<Props> = ({ targetUser }) => {
     const [message, setMessage] = useState<string>("")
 
+    const { authUser } = useSelector((state: RootState) => state.auth)
     const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
     const dispatch = useAppDispatch()
     const [mutate] = useSendMessageMutation()
@@ -25,7 +26,7 @@ const MessageInput: React.FC<Props> = ({ targetUser }) => {
             return
         }
 
-        mutate({ message, targetUser }).unwrap()
+        mutate({ message, targetUser, sender: authUser! }).unwrap()
             .then(res => {
                 if (!selectedConversationId) {
                     dispatch(setSelectedConversation(res.data.conversationId))
