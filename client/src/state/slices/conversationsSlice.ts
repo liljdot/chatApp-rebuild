@@ -1,6 +1,7 @@
 import type { ConversationForList, MessageForConversation } from "@/features/conversation/types";
 import { authApi } from "@/services/api/authApi";
 import { conversationsApi } from "@/services/api/conversationsApi";
+import { usersApi } from "@/services/api/usersApi";
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 const initialState: {
@@ -84,6 +85,17 @@ const conversationsSlice = createSlice({
         })
     },
     extraReducers: builder => {
+        builder.addMatcher(usersApi.endpoints.getConversationUser.matchFulfilled, (state, action) => {
+            const { arg: { originalArgs } } = action.meta
+            const conversationIndex = state.conversations.findIndex(c => c.id == originalArgs.conversationId)
+
+            const conversation = state.conversations[conversationIndex]
+            conversation.User[0] = action.payload.data
+
+            state.conversations = [
+                ...state.conversations.map(c => c.id != conversation.id ? c : conversation)
+            ]
+        })
         builder.addMatcher(conversationsApi.endpoints.getConversations.matchFulfilled, (state, action) => {
             state.conversations = action.payload.data
         })
