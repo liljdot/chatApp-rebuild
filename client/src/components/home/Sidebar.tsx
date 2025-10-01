@@ -14,7 +14,7 @@ const Sidebar: React.FC = () => {
     const { conversations } = useSelector((state: RootState) => state.conversations)
     const { isLoading, error } = useGetConversationsQuery(undefined)
     const [displayedConversations, setDisplayedConversations] = useState(conversations)
-    const { conversationFieldOpen, setConversationFieldOpen } = useConversationFieldContext()
+    const { conversationFieldOpen } = useConversationFieldContext()
 
     useEffect(() => {
         setDisplayedConversations(conversations)
