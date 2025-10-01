@@ -1,6 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui"
 import type { ConversationForList } from "../types"
-import MessageBubble from "./MessageBubble"
 import MessageInput from "./MessageInput"
 import NoConversationSelected from "./NoConversationSelected"
 import { useSelector } from "react-redux"
@@ -15,7 +14,7 @@ import { ChevronLeft } from "lucide-react"
 import type { EventHandler, SyntheticEvent } from "react"
 import { setSelectedConversation } from "@/state/slices/conversationsSlice"
 import { setSelectedUser } from "@/state/slices/usersSlice"
-import { TiMessages } from "react-icons/ti"
+import MessagesContainer from "./MessagesContainer"
 
 interface ConversationFieldProps {
     conversationId: ConversationForList["id"] | null
@@ -26,12 +25,6 @@ interface ConversationFieldHeaderProps {
     targetUser: User
     targetUserIsOnline?: boolean
     setConversationFieldOpen?: (value: boolean) => void
-}
-
-interface MessagesContainerProps {
-    isLoading: boolean
-    messages: ConversationForList["Message"]
-    targetUser: User
 }
 
 const ConversationField: React.FC<ConversationFieldProps> = ({
@@ -52,7 +45,7 @@ const ConversationField: React.FC<ConversationFieldProps> = ({
             : false
 
     const { isLoading: getMessagesIsLoading, isFetching: getMessagesIsFetching } = useGetConversationMessagesQuery(conversationId || skipToken)
-    const { isLoading: getConversationByUserIdIsLoading, data: conversationByUserIdResponse, isFetching: getConversationByUserIdIsFetching } = useGetConversationByUserIdQuery(conversationId ? skipToken : !targetUser ? skipToken : targetUser.id, { refetchOnMountOrArgChange: true })
+    const { isLoading: getConversationByUserIdIsLoading, isFetching: getConversationByUserIdIsFetching } = useGetConversationByUserIdQuery(conversationId ? skipToken : !targetUser ? skipToken : targetUser.id, { refetchOnMountOrArgChange: true })
 
     return (
         <div className={cn(
@@ -126,35 +119,6 @@ const ConversationFieldHeader: React.FC<ConversationFieldHeaderProps> = ({
                 </div>
             </div>
         </div>
-    )
-}
-
-const MessagesContainer: React.FC<MessagesContainerProps> = ({ messages, isLoading, targetUser }) => {
-
-    return (
-        <>
-            <div className="flex-1 flex flex-col-reverse px-4 overflow-auto">
-                {
-                    messages.map(message => (
-                        <MessageBubble
-                            message={message}
-                            targetUser={targetUser}
-                            key={message.id}
-                        />
-                    ))
-                }
-                {
-                    isLoading
-                        ? <span className="loading loading-spinner loading-xl mx-auto"></span>
-                        : !messages.length && (
-                            <div className="px-4 text-center sm:text-lg md:text-xl text-gray-200 font-semibold flex flex-1 flex-col items-center justify-center gap-2">
-                                <h1>Send a message to start a conversation with {targetUser.fullName}</h1>
-                                <TiMessages className="text-3xl md:text-6xl text-center" />
-                            </div>
-                        )
-                }
-            </div>
-        </>
     )
 }
 
