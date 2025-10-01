@@ -45,7 +45,7 @@ const postLogin = (req: Request, res: Response) => {
     prisma.user.findUnique({
         where: { username }
     }) // check if user exists
-        .then(user => {
+        .then((user: (CleanUser & { password: string }) | null) => {
             if (!user) {
                 return Promise.reject({
                     status: 400,
@@ -67,7 +67,7 @@ const postLogin = (req: Request, res: Response) => {
             return bcrypt.compare(password, user.password) // check if password is correct
         }
         )
-        .then(isCorrect => {
+        .then((isCorrect: boolean) => {
             if (!isCorrect) {
                 return Promise.reject({
                     status: 400,
@@ -98,15 +98,15 @@ const postLogin = (req: Request, res: Response) => {
             })
         }
         )
-        .catch(err => {
+        .catch((err: any) => {
             console.log("postLogin error:", err)
 
             return res.status(err.status || 500).json({
-            status: err.status || 500,
-            message: err.message || "Something went wrong",
-            error: err.error || "Internal server error"
+                status: err.status || 500,
+                message: err.message || "Something went wrong",
+                error: err.error || "Internal server error"
+            })
         })
-    })
 }
 
 const postSignup = (req: Request, res: Response) => {
@@ -137,7 +137,7 @@ const postSignup = (req: Request, res: Response) => {
     prisma.user.findUnique({
         where: { username }
     })
-        .then(user =>
+        .then((user: (CleanUser & { password: string }) | null) =>
             user
                 ? Promise.reject({
                     status: 400,
@@ -146,7 +146,7 @@ const postSignup = (req: Request, res: Response) => {
                 })
                 : hashNewPassword(password)
         )
-        .then(hashedPassword => prisma.user.create({
+        .then((hashedPassword: string) => prisma.user.create({
             data: {
                 fullName,
                 username,
@@ -155,7 +155,7 @@ const postSignup = (req: Request, res: Response) => {
                 profilePic: createUniqueProfilepic(username, gender)
             }
         }))
-        .then(newUser => {
+        .then((newUser: CleanUser & {password: string}) => {
             const token = generateToken(newUser.id)
 
             res.cookie(
@@ -184,7 +184,7 @@ const postSignup = (req: Request, res: Response) => {
             })
         }
         )
-        .catch(err => {
+        .catch((err: any) => {
             console.log("postSignup error:", err)
 
             return res.status(err.status || 500).json({

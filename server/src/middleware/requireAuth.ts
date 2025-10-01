@@ -2,6 +2,7 @@ import { config } from "dotenv";
 import jwt, { JwtPayload, VerifyErrors } from "jsonwebtoken";
 import { NextFunction, Request, Response } from "express";
 import prisma from "../db/prisma.js";
+import { CleanUser } from "../types/index.js";
 
 config()
 
@@ -42,7 +43,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
                 updatedAt: true
             }
         })
-            .then(cleanUser => !cleanUser
+            .then((cleanUser: CleanUser | null) => !cleanUser
                 ? Promise.reject({
                     status: 410,
                     message: "User not found",
@@ -50,7 +51,7 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
                 })
                 : req.user = cleanUser
             )
-            .catch(err => {
+            .catch((err: any) => {
                 console.log("requireAuth error:", err)
                 req.error = err
             })

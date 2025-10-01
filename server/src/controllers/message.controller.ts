@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import prisma from "../db/prisma.js";
 import { getRecipientSocketId, io } from "../socket/index.js";
+import { Conversation, ConversationWithMessages, Message } from "../types/index.js";
 
 const getConversations = (req: Request, res: Response) => {
     // must be used with requireAuth middleware which will either set req.user or req.error
@@ -47,7 +48,7 @@ const getConversations = (req: Request, res: Response) => {
         },
         orderBy: { updatedAt: "desc" },
     })
-        .then(conversations => !conversations
+        .then((conversations: (ConversationWithMessages & { User: { id: string, profilePic: string, fullName: string }[] })[]) => !conversations
             ? Promise.reject({
                 status: 404,
                 message: "No conversations found",
@@ -59,7 +60,7 @@ const getConversations = (req: Request, res: Response) => {
                 data: conversations
             })
         )
-        .catch(err => {
+        .catch((err: any) => {
             console.log("getConversations error:", err)
 
             return res.status(err.status || 500).json({
@@ -102,7 +103,7 @@ const getConversationByUserId = (req: Request, res: Response) => {
             ]
         }
     })
-        .then(conversation => {
+        .then((conversation: Conversation | null) => {
             if (!conversation) {
                 return Promise.reject({
                     status: 404,
@@ -117,7 +118,7 @@ const getConversationByUserId = (req: Request, res: Response) => {
                 data: conversation
             })
         })
-        .catch(err => {
+        .catch((err: any) => {
             console.log("getConversation error:", err)
 
             return res.status(err.status || 500).json({
@@ -165,7 +166,7 @@ const getConversationMessages = (req: Request, res: Response) => {
             }
         }
     })
-        .then(conversation => !conversation
+        .then((conversation: ConversationWithMessages | null) => !conversation
             ? Promise.reject({
                 status: 404,
                 message: "Conversation not found",
@@ -173,7 +174,7 @@ const getConversationMessages = (req: Request, res: Response) => {
             })
             : conversation
         )
-        .then(conversation => !conversation.participantIds.includes(user.id)
+        .then((conversation: ConversationWithMessages) => !conversation.participantIds.includes(user.id)
             ? Promise.reject({
                 status: 403,
                 message: "You are not a participant in this conversation",
@@ -185,7 +186,7 @@ const getConversationMessages = (req: Request, res: Response) => {
                 data: conversation.Message
             })
         )
-        .catch(err => {
+        .catch((err: any) => {
             console.log("getConversationMessages error:", err)
 
             return res.status(err.status || 500).json({
@@ -320,7 +321,7 @@ const postSendMessage = (req: Request, res: Response) => {
             ]
         }
     })
-        .then(conversation => conversation
+        .then((conversation: Conversation | null) => conversation
             ? conversation
             : prisma.conversation.create({
                 data: {
@@ -334,7 +335,7 @@ const postSendMessage = (req: Request, res: Response) => {
                 }
             })
         )
-        .then(conversation => prisma.$transaction([
+        .then((conversation: Conversation) => prisma.$transaction([
             prisma.message.create({
                 data: {
                     conversationId: conversation.id,
@@ -347,7 +348,7 @@ const postSendMessage = (req: Request, res: Response) => {
                 data: { updatedAt: new Date() } // update conversation's updatedAt field to current time
             })
         ]))
-        .then(([message]) => {
+        .then(([message]: [Message, Conversation]) => {
             const recipientSocketId = getRecipientSocketId(recipientId)
             if (recipientSocketId) {
                 io.to(recipientSocketId).emit("newMessage", message)
@@ -360,7 +361,7 @@ const postSendMessage = (req: Request, res: Response) => {
             })
         }
         )
-        .catch(err => {
+        .catch((err: any) => {
             console.log("postSendMessage error:", err)
 
             return res.status(500).json({

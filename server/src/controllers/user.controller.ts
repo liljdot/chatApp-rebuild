@@ -35,7 +35,7 @@ const getUser = (req: Request, res: Response) => {
             updatedAt: true
         }
     })
-    .then(user => !user 
+    .then((user: CleanUser | null) => !user 
         ? Promise.reject({
             status: 404,
             message: "User not found",
@@ -47,7 +47,7 @@ const getUser = (req: Request, res: Response) => {
             data: user
         })
     )
-    .catch(err => res.status(err.status || 500).json({
+    .catch((err: any) => res.status(err.status || 500).json({
         status: err.status || 500,
         message: err.message || "Something went wrong",
         error: err.error || "Internal server error"
@@ -89,19 +89,19 @@ const getAllUsers = (req: Request, res: Response) => {
             updatedAt: true
         }
     })
-        .then(user => !user ? Promise.reject("User not found") : Jehu = user)
-        .then(user => prisma.user.findMany({
+        .then((user: CleanUser | null) => !user ? Promise.reject("User not found") : Jehu = user)
+        .then((user: CleanUser) => prisma.user.findMany({
             take: 10,
             orderBy: {
                 createdAt: "desc"
             }
         }))
-        .then(users => res.status(200).json({
+        .then((users: CleanUser[]) => res.status(200).json({
             status: 200,
             message: "Users fetched successfully",
             data: [
                 Jehu,
-                ...users.filter(u => u.id != Jehu.id)
+                ...users.filter((u: CleanUser) => u.id != Jehu.id)
             ]
         }))
         .catch(err => res.status(500).json({
