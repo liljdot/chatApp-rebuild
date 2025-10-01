@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { setSelectedConversation } from "@/state/slices/conversationsSlice";
 import { useSocketContext } from "@/context/SocketContext";
 import { memo, useEffect, useState, type EventHandler, type SyntheticEvent } from "react";
+import { useGetConversationUserQuery } from "@/services/api/usersApi";
 
 interface Props {
     conversation: ConversationForList
@@ -13,6 +14,7 @@ interface Props {
 }
 
 const ConversationTile: React.FC<Props> = ({ conversation, setConversationFieldOpen }) => {
+    useGetConversationUserQuery({ id: conversation.Message[0].senderId, conversationId: conversation.id }, { skip: !!conversation.User[0] })
     const { selectedConversationId } = useSelector((state: RootState) => state.conversations)
     const isSelected = selectedConversationId == conversation.id
 
