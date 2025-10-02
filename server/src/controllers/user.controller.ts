@@ -104,7 +104,7 @@ const getAllUsers = (req: Request, res: Response) => {
                 ...users.filter((u: CleanUser) => u.id != Jehu.id)
             ]
         }))
-        .catch(err => res.status(500).json({
+        .catch((err: any) => res.status(500).json({
             status: err.status || 500,
             message: err.message || "Something went wrong",
             error: err.error || "Internal server error"
