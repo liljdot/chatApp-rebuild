@@ -81,7 +81,7 @@ const postLogin = (req: Request, res: Response) => {
                 "chatAppToken",
                 token,
                 {
-                    maxAge: 10 * 60 * 1000, // 10 minutes
+                    maxAge: 100 * 60 * 1000, // 10 minutes
                     httpOnly: true,
                     sameSite: "strict",
                     secure: process.env.NODE_ENV != "development"
@@ -162,7 +162,7 @@ const postSignup = (req: Request, res: Response) => {
                 "chatAppToken",
                 token,
                 {
-                    maxAge: 10 * 60 * 1000, // 10 minutes
+                    maxAge: 100 * 60 * 1000, // 10 minutes
                     httpOnly: true,
                     sameSite: "strict",
                     secure: process.env.NODE_ENV != "development"
