@@ -4,6 +4,12 @@ A real-time chat messaging application built with a modern web stack.
 
 ---
 
+## 🚀 Live Demo
+
+[View the deployed app here](https://chatapp-rebuild-1.onrender.com/)
+
+---
+
 ## 🛠️ Tech Stack
 
 ### 📦 Backend
